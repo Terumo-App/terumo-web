@@ -1,0 +1,23 @@
+
+
+.buttonPrimary {
+  width: 220px;
+  height: 40px;
+  border-radius: 10px;
+
+  background-color: var(--ligth-wine);
+  color: var(--white);
+
+  font-size: medium;
+  font-weight: 600;
+
+  &:hover {
+    color: var(--ligth-wine);
+    border-color: var(--ligth-wine);
+  }
+
+
+  margin-bottom: 200px;
+
+}
+ 

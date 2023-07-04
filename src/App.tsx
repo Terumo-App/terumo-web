@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import 'antd/dist/antd';
+import { Route, Routes } from "react-router-dom";
+import { GlobalStyle } from './styles/global';
+import { NewQuery } from './pages/NewQuery';
+import { NewQueryProvider } from './hooks/NewQueryContext';
+import { QueryResult } from './pages/QueryResult';
+import { Collections } from './pages/Collections';
+import { Settings } from './pages/Settings';
+import { SavedQueries } from './pages/SavedQueries';
+import { Help } from './pages/Help';
+import { LogIn } from './pages/LogIn';
+import { Register } from './pages/Register';
 
-function App() {
+export function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <NewQueryProvider>
+      <Routes>
+        
+        <Route path="/" element={<NewQuery />} />
+        <Route path="/query-result" element={<QueryResult />} />
+        <Route path="/collections" element={<Collections />} />
+        <Route path="/saved-queries" element={<SavedQueries />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/help" element={<Help />} />
+
+        <Route path="/login" element={<LogIn />} />
+        <Route path="/register" element={<Register />} />
+        
+      </Routes>
+      <GlobalStyle />
+    </NewQueryProvider>
   );
 }
-
-export default App;

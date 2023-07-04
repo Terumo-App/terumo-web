@@ -1,0 +1,15 @@
+
+.checkbox {
+    [class~="ant-checkbox-inner:hover"] {
+        background-color: var(--dark-red) !important;
+        border-color: black !important;
+
+
+        &:hover { 
+            border-color: black !important;
+        }
+    }
+    [class~="ant-checkbox-inner"] {
+       // background-color: var(--dark-red) !important;
+    }
+}
