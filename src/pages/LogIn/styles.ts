@@ -1,16 +1,10 @@
 import styled from 'styled-components';
 
-export const Container = styled.header`
-  max-width: 80%;
-  margin: 0 auto;
-  margin-top: 20px;
+export const Container = styled.div`
+  display: flex;
+  flex-direction: row;
 
-  text-align: center;
-
-  h2 {
-    margin-bottom: 40px;
-    color: var(--dark-grey);
-  }
+  height: 1000px;
 `;
 
 export const PageTittle = styled.div`
@@ -18,7 +12,7 @@ export const PageTittle = styled.div`
   justify-content: center;
   margin: 0 auto;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 
   font-weight: 700;
   font-size: 30px;
@@ -37,12 +31,18 @@ export const PageTittle = styled.div`
 `;
 
 export const Content = styled.div`
-  padding-left: 25px;
-  padding-right: 25px;
-  h2 {
-    margin-top: 30px;
-    margin-bottom: 30px;
-    color: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #fff;
+
+  width: 100%;
+  margin: 0 auto;
+
+  h5 {
+    font-size: 14px;
   }
 `;
 
@@ -64,5 +64,5 @@ export const ButtonPrimary = styled.button`
     background-color: var(--white);
   }
 
-  margin-bottom: 200px;
+  margin-bottom: 20px;
 `;
