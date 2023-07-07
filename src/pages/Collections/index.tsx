@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { DownOutlined } from '@ant-design/icons';
-import type { RadioChangeEvent } from 'antd';
-import { Form, Radio, Space, Switch, Table, Tag } from 'antd';
+import { Dropdown } from 'antd';
+import { Space, Table, Tag } from 'antd';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import type {
-  ExpandableConfig,
   TableRowSelection,
 } from 'antd/es/table/interface';
 import { FiHardDrive } from 'react-icons/fi';
@@ -13,7 +12,16 @@ import { FiHardDrive } from 'react-icons/fi';
 import { Header } from '../../components/Header';
 import { Container, PageTittle } from './styles';
 
-export function  Collections() {
+import { LockOutlined, GlobalOutlined } from '@ant-design/icons';
+
+const tags = ['Public', 'Private'];
+const items = [
+    { key: '1', label: 'Edit' },
+    { key: '2', label: 'Remove' },
+    { key: '3', label: 'Save' },
+  ];
+
+export function Collections() {
   interface DataType {
     key: string;
     date: string;
@@ -35,15 +43,22 @@ export function  Collections() {
     {
       dataIndex: 'type',
       title: 'Type',
-      render: (tag) => <Tag style={
-        {
-          borderRadius: 5,
-          width: 77,
-          height: 25,
-          display: "flex",
-          alignItems: "center"
-        }
-      } icon={ `tag` }>{tag}</Tag>,
+      render: (tag) => (
+        <Tag
+          style={{
+            borderRadius: 5,
+            width: 77,
+            height: 25,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+          icon={
+            tag === 'Public' ? <GlobalOutlined /> : <LockOutlined />
+          }
+          color={tag === 'Public' ? 'success' : 'warning'}>
+          {tag}
+        </Tag>
+      ),
     },
     {
       dataIndex: 'name',
@@ -57,10 +72,30 @@ export function  Collections() {
       dataIndex: 'date',
       title: 'Last Update',
     },
-  
     {
       dataIndex: 'owner',
       title: 'Owner',
+    },
+    {
+      dataIndex: 'action',
+      title: 'Action',
+      render: (key) => (
+        <Space size="middle">
+          <a
+            style={{
+              color: '#702331',
+            }}>
+            View
+          </a>
+          <Dropdown menu={{ items }}>
+              <a style={{
+              color: '#702331',
+            }}>
+                More <DownOutlined />
+              </a>
+          </Dropdown>        
+        </Space>
+      ),
     },
   ];
 
@@ -72,7 +107,7 @@ export function  Collections() {
       owner: `Proprietário ${i + 1}`,
       date: '12-27-2023',
       items: `${i + i * i}`,
-      type: "tags[i % 2]",
+      type: tags[i % 2],
     });
   }
 
@@ -81,7 +116,7 @@ export function  Collections() {
 
   const [size, setSize] = useState<SizeType>('large');
   const [showTitle, setShowTitle] = useState(false);
-  const [showfooter, setShowFooter] = useState(true);
+  const [showfooter, setShowFooter] = useState(false);
   const [rowSelection, setRowSelection] = useState<
     TableRowSelection<DataType> | undefined
   >({});
@@ -95,7 +130,6 @@ export function  Collections() {
   const [ellipsis, setEllipsis] = useState(false);
   const [yScroll, setYScroll] = useState(false);
   const [xScroll, setXScroll] = useState<string>();
-
 
   const scroll: { x?: number | string; y?: number | string } = {};
   if (yScroll) {
@@ -117,12 +151,14 @@ export function  Collections() {
   const tableProps: TableProps<DataType> = {
     bordered: false,
     loading: false,
-    expandable: undefined,
+    expandable: {
+      expandedRowRender: (record: DataType) => <p>{record.owner}</p>,
+    },
     size,
     title: showTitle ? defaultTitle : undefined,
     showHeader: true,
     footer: showfooter ? defaultFooter : undefined,
-    rowSelection,
+    rowSelection: undefined,
     scroll,
     tableLayout,
   };
