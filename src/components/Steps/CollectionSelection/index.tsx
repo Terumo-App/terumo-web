@@ -199,7 +199,7 @@ export function CollectionSelectionStep() {
         setGlobalData(response.data);
         setdata(response.data);
       } catch (error) {
-        console.error('Erro na requisição GET:', error);
+        console.error('Error on request GET:', error);
       }
     };
 
