@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Avatar, Button, Card, Image, List, Skeleton } from 'antd';
 import { ButtonPrimary } from '../../pages/NewQuery/styles';
+import { Api } from '../../services/api';
+import { NewQueryContext } from '../../hooks/NewQueryContext';
+
 
 interface DataType {
-  gender?: string;
-  name: {
-    title?: string;
-    first?: string;
-    last?: string;
-  };
-  email?: string;
+  image_url:string;
   picture: {
     large?: string;
     medium?: string;
@@ -19,10 +16,22 @@ interface DataType {
   loading: boolean;
 }
 
+interface BodyData {
+  image_base64: string | null | undefined;
+  semantic_attributes:AtributeItemData[]
+}
+
+interface AtributeItemData {
+  id: string;
+  name: string
+}
+
 const count = 6;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
 
 export function ImageList() {
+  const { newQueryData } = useContext(NewQueryContext);
+  
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<DataType[]>([]);
@@ -60,36 +69,88 @@ export function ImageList() {
     'https://media.istockphoto.com/id/937463412/pt/foto/renal-corpuscles-filtering-the-blood-in-the-kidney.jpg?s=612x612&w=0&k=20&c=OyK9CN-QmqcYKgMAnFm1BitrXknhuhFcpBGD4ahhxw4=',
   ];
 
+  // const body:BodyData = {
+  //   image_base64: "a",
+  //   semantic_attributes: [
+  //     {
+  //       id: "normal",
+  //       name: "Normal"
+  //     },
+  //     {
+  //       id: "hypercellularity",
+  //       name: "Hypercellularity"
+  //     },
+  //     {
+  //       id: "podocytopathy",
+  //       name: "Podocytopathy"
+  //     },
+  //     {
+  //       id: "membranous",
+  //       name: "Membranous"
+  //     },
+  //     {
+  //       id: "crescent",
+  //       name: "Crescent"
+  //     },
+  //     {
+  //       id: "sclerosis",
+  //       name: "Sclerosis"
+  //     }
+  //   ]
+  // }
+
+
+  const fetchQueryImages = async () => {
+    try {
+
+      // body.image_base64 = (newQueryData.image?.thumbUrl as string).replace('data:image/png;base64,', '');
+
+      const body = require('../../assets/queryMock.json')
+      console.log(body)
+
+      const response = await Api.post('/search-service/search', body);
+      setInitLoading(false);
+      console.log(response.data);
+
+      // const newData = data.concat(response.data);
+
+      setData(response.data);
+      setList(response.data);
+    } catch (error) {
+      console.error('Error on request GET:', error);
+    }
+  };
+
   useEffect(() => {
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
-      .then((res) => {
-        setInitLoading(false);
-
-        console.log(res.results);
-        const newData = data.concat(res.results);
-        const aux = newData.map((item, index) => {return {
-          ...item,
-          picture: {
-            thumbnail: imageList[index],
-          }
-        }})
-
-        setData(aux);
-        setList(aux);
-      });
+    fetchQueryImages();
   }, []);
+
+
+  // useEffect(() => {
+  //   fetch(fakeDataUrl)
+  //     .then((res) => res.json())
+  //     .then((res) => {
+  //       setInitLoading(false);
+
+  //       console.log(res.results);
+  //       const newData = data.concat(res.results);
+  //       const aux = newData.map((item, index) => {return {
+  //         ...item,
+  //         picture: {
+  //           thumbnail: imageList[index],
+  //         }
+  //       }})
+
+  //       setData(aux);
+  //       setList(aux);
+  //     });
+  // }, []);
 
   const onLoadMore = () => {
     setLoading(true);
     setList(
-      data.concat(
-        [...new Array(count)].map(() => ({
-          loading: true,
-          name: {},
-          picture: {},
-        }))
-      )
+      data
+      
     );
     console.log(data);
     fetch(fakeDataUrl)
@@ -97,12 +158,14 @@ export function ImageList() {
       .then((res) => {
         const newData = data.concat(...res.results);
 
-        const aux = newData.map((item, index) => {return {
-          ...item,
-          picture: {
-            thumbnail: imageList[index],
+        const aux = newData.map((item, index) => {
+          return {
+            ...item,
+            picture: {
+              thumbnail: imageList[index],
+            }
           }
-        }})
+        })
         setData(aux);
         setList(aux);
         setLoading(false);
@@ -113,38 +176,38 @@ export function ImageList() {
       });
   };
 
-  const onLoadMore2 = () => {
-    setLoading(true);
-    setList(
-      data.concat(
-        [...new Array(count)].map(() => ({
-          loading: true,
-          name: {},
-          picture: {},
-        }))
-      )
-    );
-    
-        
-    const results = imageList.filter((x, index) => index < 2).map(item => { 
-      return {
-      loading: true,
-        name: {},
-        picture: {
-          large: item,
-          medium: item,
-          thumbnail: item,
-        },
-      }
-    });
-    
-    const newData = results;
-    setData(newData);
-    setList(newData);
-    setLoading(false);
+  // const onLoadMore2 = () => {
+  //   setLoading(true);
+  //   setList(
+  //     data.concat(
+  //       [...new Array(count)].map(() => ({
+  //         loading: true,
+  //         name: {},
+  //         picture: {},
+  //       }))
+  //     )
+  //   );
 
-    window.dispatchEvent(new Event('resize'));
-  };
+
+  //   const results = imageList.filter((x, index) => index < 2).map(item => {
+  //     return {
+  //       loading: true,
+  //       name: {},
+  //       picture: {
+  //         large: item,
+  //         medium: item,
+  //         thumbnail: item,
+  //       },
+  //     }
+  //   });
+
+  //   const newData = results;
+  //   setData(newData);
+  //   setList(newData);
+  //   setLoading(false);
+
+  //   window.dispatchEvent(new Event('resize'));
+  // };
 
   const loadMore =
     !initLoading && !loading ? (
@@ -179,21 +242,21 @@ export function ImageList() {
       loading={initLoading}
       loadMore={loadMore}
       dataSource={list}
-      style={{marginInline: 60 }}
+      style={{ marginInline: 60 }}
       renderItem={(item) => (
         <List.Item >
           <Card
             hoverable
             style={{ width: 420, borderRadius: 10, paddingTop: 10 }}
-            cover={<Image   
+            cover={<Image
               width={400}
               height={350}
               style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
-              src={item.picture.thumbnail}
+              src={item.image_url}
             />}
           >
-            <div style={{display: 'flex', justifyContent: 'center', marginBottom: -20, marginTop: -10}}> 
-              <h3>Score:</h3> &nbsp; <p style={{ fontSize: 16}}>0.9839</p>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: -20, marginTop: -10 }}>
+              <h3>Score:</h3> &nbsp; <p style={{ fontSize: 16 }}>0.9839</p>
             </div>
           </Card>
         </List.Item>
