@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
   :root {
@@ -53,4 +53,25 @@ export const GlobalStyle = createGlobalStyle`
     opacity: 0.6;
     cursor: not-allowed;
   }
+`;
+
+export const ButtonSecondary = styled.button`
+  width: 220px;
+  height: 40px;
+  border: 1px solid;
+  border-radius: 10px;
+
+  background-color: var(--white);
+  color: var(--ligth-wine);
+
+  font-size: medium;
+  font-weight: 600;
+
+  &:hover {
+    color: var(--white);
+    border-color: var(--ligth-wine);
+    background-color: var(--ligth-wine);
+  }
+
+  margin-bottom: 20px;
 `;

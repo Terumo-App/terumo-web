@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
@@ -12,7 +12,7 @@ export const PageTittle = styled.div`
   justify-content: center;
   margin: 0 auto;
   align-items: center;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 
   font-weight: 700;
   font-size: 30px;

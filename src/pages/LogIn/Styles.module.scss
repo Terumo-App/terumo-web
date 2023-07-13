@@ -1,9 +1,14 @@
 .loginForm {
-  //max-width: 300px;
+  margin-top: 80px !important;
 }
+
 .loginFormForgot {
-  float: center !important;
-  color: #3d3737 !important;
+  color: var(--grey) !important;
+  font-size: 18px;
+
+  &:hover {
+    color: var(--ligth-wine) !important;
+  }
 }
 
 .loginFormButton {
@@ -13,7 +18,7 @@
 .FormInput {
   width: 450px !important;
   height: 45px !important;
-  border: solid 1px #858585 !important;
+  border: solid 1px var(--grey) !important;
   border-radius: 8px !important;
   gap: 10px !important;
 
@@ -21,5 +26,4 @@
     width: 18px !important;
     height: 18px !important;
   }
-
 }
