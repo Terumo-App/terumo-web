@@ -3,8 +3,14 @@ import { ReactNode, createContext, useState } from 'react';
 interface NewQueryData {
   collections?: Array<any>;
   imageType?: string;
-  image?: object;
+  image?: ImageObject;
   attributes?: Array<any>;
+}
+
+interface ImageObject {
+  thumbUrl?: string | ArrayBuffer;
+  type?: string;
+  name?: string;
 }
 
 interface NewQueryProviderProps {

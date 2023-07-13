@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Space, Table, Tag, Transfer } from 'antd';
 import type { ColumnsType, TableRowSelection } from 'antd/es/table/interface';
 import type { TransferItem, TransferProps } from 'antd/es/transfer';
@@ -7,6 +7,8 @@ import { LockOutlined, GlobalOutlined, CheckOutlined } from '@ant-design/icons';
 
 import { Content } from '../styles';
 import { NewQueryContext } from '../../../hooks/NewQueryContext';
+
+import { Api } from '../../../services/api';
 
 interface TableTransferProps extends TransferProps<DataType> {
   dataSource: DataType[];
@@ -163,7 +165,7 @@ const TableTransfer = ({
           columns={columns}
           dataSource={filteredItems}
           size="middle"
-          style={{ pointerEvents: listDisabled ? 'none' : undefined }}
+          style={{ pointerEvents: listDisabled ? 'none' : undefined, minHeight: 350 }}
           onRow={({ key, disabled: itemDisabled }) => ({
             onClick: () => {
               if (itemDisabled || listDisabled) return;
@@ -186,13 +188,31 @@ export function CollectionSelectionStep() {
 
     const [targetKeys, setTargetKeys] = useState<string[]>([]);
     const [selectedTags, setSelectedTags] = useState<string[]>(tags);
-    const [data, setdata] = useState<RecordType[]>(mockData);
+    const [globalData, setGlobalData] = useState<RecordType[]>([]);
+    const [data, setdata] = useState<RecordType[]>([]);
+
+
+
+    const fetchAvailableCollections = async () => {
+      try {
+        const response = await Api.get('/image-service/collection');
+        setGlobalData(response.data);
+        setdata(response.data);
+      } catch (error) {
+        console.error('Error on request GET:', error);
+      }
+    };
+
+    useEffect(() => { 
+      fetchAvailableCollections();
+    }, []);
+
 
 
     const onChange = (nextTargetKeys: string[]) => {
       setTargetKeys(nextTargetKeys);
       const selectedCollections = nextTargetKeys.map((item) => {
-        return mockData[Number(item)];
+        return globalData[Number(item)];
       });
   
       setCollection(selectedCollections);
@@ -210,7 +230,7 @@ export function CollectionSelectionStep() {
         : selectedTags.filter((t: string) => t !== tag);
       console.log('You are interested in: ', nextSelectedTags);
       setSelectedTags(nextSelectedTags);
-      setdata(mockData.filter((item) => nextSelectedTags.includes(item.type as string)));
+      setdata(globalData.filter((item) => nextSelectedTags.includes(item.type as string)));
     };
     
   return (

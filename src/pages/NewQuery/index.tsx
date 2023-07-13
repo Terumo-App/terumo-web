@@ -112,7 +112,7 @@ export function NewQuery() {
             <ButtonPrimary
               onClick={() => {
                 next();
-                createNewQuery();
+                // createNewQuery();
                 redirectResult();
               }}>
               Run Search

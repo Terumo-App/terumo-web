@@ -6,14 +6,14 @@ import { useContext } from 'react';
 
 
 export function ImageUploadStep() {
-  const { setImageFile } = useContext(NewQueryContext);
+  const { newQueryData, setImageFile } = useContext(NewQueryContext);
 
   const { Dragger } = Upload;
 
   const props: UploadProps = {
     name: 'file',
     multiple: false,
-    action: 'https://jsonplaceholder.typicode.com/posts',
+    // action: 'https://jsonplaceholder.typicode.com/posts',
     accept: '.png, .jpeg',
     listType: 'picture',
     showUploadList: { showPreviewIcon: true },
@@ -21,6 +21,7 @@ export function ImageUploadStep() {
     onChange(info) {
       const { status } = info.file;
       setImageFile(info.file);
+      console.log(newQueryData)
       
       if (status !== 'uploading') {
         console.log(info.file, info.fileList);
