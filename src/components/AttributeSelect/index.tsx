@@ -1,14 +1,29 @@
 import { Checkbox } from 'antd';
 import { Container } from './styles';
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { NewQueryContext } from '../../hooks/NewQueryContext';
+import { Api } from '../../services/api';
 
 export function AttributeSelect() {
   const { setSemanticAttributes } = useContext(NewQueryContext);
 
   const [attributes, setAttributes] = useState<string[]>([]);
+  const [data, setData] = useState<any[]>([]);
+
+  const fetchAvailableCollections = async () => {
+    try {
+      const response = await Api.get('/search-service/semantic-attributes');
+      setData(response.data);
+    } catch (error) {
+      console.error('Error on request GET:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAvailableCollections();
+  }, []);
 
   const onChange = (e: CheckboxChangeEvent) => {
     if (
@@ -28,45 +43,16 @@ export function AttributeSelect() {
 
   return (
     <>
-      <Container>
-        <div>
-          <Checkbox id="1" onChange={onChange} />
-        </div>
-
-        <div>
-          <h4>Attribute 1</h4>
-        </div>
-      </Container>
-
-      <Container>
-        <div>
-          <Checkbox id="2" onChange={onChange} />
-        </div>
-
-        <div>
-          <h4>Attribute 2</h4>
-        </div>
-      </Container>
-
-      <Container>
-        <div>
-          <Checkbox id="3" onChange={onChange} />
-        </div>
-
-        <div>
-          <h4>Attribute 3</h4>
-        </div>
-      </Container>
-
-      <Container>
-        <div>
-          <Checkbox id="4" onChange={onChange} />
-        </div>
-
-        <div>
-          <h4>Attribute 4</h4>
-        </div>
-      </Container>
+      {data.map((item) => (
+        <Container key={item.id}>
+          <div >
+            <Checkbox id={item.id} onChange={onChange} />
+            <div>
+              <h4>{item.name}</h4>
+            </div>
+          </div>
+        </Container>
+      ))}
     </>
   );
 }
