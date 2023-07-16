@@ -4,7 +4,8 @@ import { Container } from './styles';
 import React, { useState, useContext, useEffect } from 'react';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import { NewQueryContext } from '../../hooks/NewQueryContext';
-import { Api } from '../../services/api';
+import ApiClient from '../../services/api';
+
 
 export function AttributeSelect() {
   const { setSemanticAttributes } = useContext(NewQueryContext);
@@ -12,13 +13,11 @@ export function AttributeSelect() {
   const [attributes, setAttributes] = useState<string[]>([]);
   const [data, setData] = useState<any[]>([]);
 
+  const api = new ApiClient()
+
   const fetchAvailableCollections = async () => {
-    try {
-      const response = await Api.get('/search-service/semantic-attributes');
-      setData(response.data);
-    } catch (error) {
-      console.error('Error on request GET:', error);
-    }
+      const response = await api.getAvailableCollections();
+      setData(response); 
   };
 
   useEffect(() => {
