@@ -6,27 +6,28 @@ import { useContext } from 'react';
 
 
 export function ImageUploadStep() {
-  const { newQueryData, setImageFile } = useContext(NewQueryContext);
+  const { setImageFile } = useContext(NewQueryContext);
 
   const { Dragger } = Upload;
 
   const props: UploadProps = {
     name: 'file',
     multiple: false,
-    // action: 'https://jsonplaceholder.typicode.com/posts',
+    action: 'http://localhost:5000/search-service/upload-query-image',
     accept: '.png, .jpeg',
     listType: 'picture',
     showUploadList: { showPreviewIcon: true },
     progress: {},
     onChange(info) {
       const { status } = info.file;
-      setImageFile(info.file);
-      console.log(newQueryData)
+       
       
       if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
+        // console.log(info.file, info.fileList);
       }
       if (status === 'done') {
+        console.log(info.file.response);
+        setImageFile(info.file.response);
         message.success(
           `${info.file.name} file uploaded successfully.`
         );

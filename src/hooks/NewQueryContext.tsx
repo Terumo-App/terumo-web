@@ -3,7 +3,7 @@ import { ReactNode, createContext, useState } from 'react';
 interface NewQueryData {
   collections?: Array<any>;
   imageType?: string;
-  image?: ImageObject;
+  image?: {id:string};
   attributes?: Array<any>;
 }
 
