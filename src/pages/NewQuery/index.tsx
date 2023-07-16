@@ -17,7 +17,7 @@ import styles from '../../styles/styles.module.scss';
 
 
 export function NewQuery() {
-  const { createNewQuery } = useContext(NewQueryContext);
+  const { newQueryData, createNewQuery } = useContext(NewQueryContext);
 
   const navigate = useNavigate();
 
@@ -29,11 +29,15 @@ export function NewQuery() {
   const prev = () => {
     setCurrent(current - 1);
   };
-
+   
   const redirectResult = async () => {
     await sleep(2500);
 
-    navigate("query-result", {
+    const newParams = new URLSearchParams();
+    newParams.append('image', (newQueryData.image?.id as string));
+    newParams.append('attributes', (newQueryData.attributes as Array<string>).join(','));
+    
+    navigate(`query-result?${newParams.toString()}`, {
       preventScrollReset: false
     });
 

@@ -60,7 +60,7 @@ const itemData = [
 ];
 
 export function QueryResult() {
-  const { createNewQuery } = useContext(NewQueryContext);
+  // const { createNewQuery } = useContext(NewQueryContext);
 
   return (
     <>
