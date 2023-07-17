@@ -24,4 +24,5 @@ FROM nginx
 #Copy production build files from builder phase to nginx
 COPY --from=builder /app/build /usr/share/nginx/html
 
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+# COPY --from=builder /nginx.conf /etc/nginx/conf.d/default.conf
