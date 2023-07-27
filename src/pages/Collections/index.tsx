@@ -1,25 +1,31 @@
 import React, { useState } from 'react';
 import { DownOutlined } from '@ant-design/icons';
-import { Dropdown } from 'antd';
+import {
+  Button,
+  Dropdown,
+  Form,
+  Input,
+  Modal,
+  Radio,
+  Switch,
+} from 'antd';
 import { Space, Table, Tag } from 'antd';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
 import type { ColumnsType, TableProps } from 'antd/es/table';
-import type {
-  TableRowSelection,
-} from 'antd/es/table/interface';
+import type { TableRowSelection } from 'antd/es/table/interface';
 import { FiHardDrive } from 'react-icons/fi';
 
 import { Header } from '../../components/Header';
-import { Container, PageTittle } from './styles';
+import { ButtonPrimary, Container, PageTittle } from './styles';
 
 import { LockOutlined, GlobalOutlined } from '@ant-design/icons';
 
 const tags = ['Public', 'Private'];
 const items = [
-    { key: '1', label: 'Edit' },
-    { key: '2', label: 'Remove' },
-    { key: '3', label: 'Save' },
-  ];
+  { key: '1', label: 'Edit' },
+  { key: '2', label: 'Remove' },
+  { key: '3', label: 'Save' },
+];
 
 export function Collections() {
   interface DataType {
@@ -88,12 +94,13 @@ export function Collections() {
             View
           </a>
           <Dropdown menu={{ items }}>
-              <a style={{
-              color: '#702331',
-            }}>
-                More <DownOutlined />
-              </a>
-          </Dropdown>        
+            <a
+              style={{
+                color: '#702331',
+              }}>
+              More <DownOutlined />
+            </a>
+          </Dropdown>
         </Space>
       ),
     },
@@ -163,6 +170,21 @@ export function Collections() {
     tableLayout,
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [form] = Form.useForm();
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <Header />
@@ -174,6 +196,42 @@ export function Collections() {
         </PageTittle>
 
         <>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginTop: -20,
+            }}>
+            <ButtonPrimary
+              onClick={showModal}
+              style={{ marginBottom: 20, width: 200, height: 50 }}>
+              Add Collection
+            </ButtonPrimary>
+
+            <Modal
+              title="Add Collection"
+              open={isModalOpen}
+              onOk={handleOk}
+              okText="Add"
+              onCancel={handleCancel}>
+              
+              <Form
+                form={form}
+                layout="vertical"
+                autoComplete="off">
+                <Form.Item label="Type:">
+                  <Radio.Group>
+                    <Radio value="public"> Public </Radio>
+                    <Radio value="private"> Private </Radio>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item label="Name:">
+                  <Input placeholder="Type collection name" />
+                </Form.Item>
+              </Form>
+            </Modal>
+          </div>
+
           <Table
             {...tableProps}
             pagination={{

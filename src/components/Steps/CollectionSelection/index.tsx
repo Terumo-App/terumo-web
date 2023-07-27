@@ -189,7 +189,7 @@ export function CollectionSelectionStep() {
     const [targetKeys, setTargetKeys] = useState<string[]>([]);
     const [selectedTags, setSelectedTags] = useState<string[]>(tags);
     const [globalData, setGlobalData] = useState<RecordType[]>([]);
-    const [data, setdata] = useState<RecordType[]>([]);
+    const [data, setdata] = useState<RecordType[]>(mockData);
 
 
 

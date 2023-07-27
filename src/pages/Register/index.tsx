@@ -155,11 +155,11 @@ export function Register() {
               <Select
                 className={styles.SelectInput}
                 suffixIcon={<SkinOutlined />}
-                defaultValue="default"
+                defaultValue="not-informed"
                 style={{ width: 120 }}
                 onChange={handleGender}
                 options={[
-                  { value: "default", label: "--" },
+                  { value: "not-informed", label: "Not informed" },
                   { value: "male", label: "Male" },
                   { value: "female", label: "Female" },
                 ]}
@@ -207,8 +207,8 @@ export function Register() {
                     label: "Researcher",
                   },
                   {
-                    value: "teacher",
-                    label: "Teacher",
+                    value: "professor",
+                    label: "Professor",
                   },
                   {
                     value: "doctor",
@@ -222,6 +222,12 @@ export function Register() {
               />
             </Form.Item>
           </div>
+
+          {/*Undegraduate Student
+            Graduate Student
+            Faculty
+            Researcher
+            other*/}
 
           <Form.Item
             name="organization"

@@ -18,20 +18,7 @@ export const Content = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 7rem;
-
-    button {
-      img {
-        width: 2.5rem;
-        border-radius: 30px;
-        border: 1px solid ${tint(0.7, '#702331')};
-
-        &:hover {
-          height: 2.7rem;
-          width: 2.7rem;
-        }
-      }
-    }
+    width: 120px;
   }
 
   button {
@@ -45,11 +32,6 @@ export const Content = styled.div`
       height: 2rem;
       width: 2rem;
       transition: color 0.2s;
-
-      &:hover {
-        height: 2.2rem;
-        width: 2.2rem;
-      }
     }
   }
 `;
