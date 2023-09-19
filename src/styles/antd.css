@@ -176,3 +176,78 @@ a:hover {
   border: 1px solid var(--grey);
   border-radius: 8px;
 }
+
+.ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+  border-color: var(--ligth-wine);
+  border-right-width: 1px;
+  z-index: 1;
+}
+
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+  border-color: var(--ligth-wine);
+  box-shadow: 0 0 0 2px rgba(85, 11, 39, 0.2);
+  border-right-width: 1px;
+  outline: 0;
+}
+
+.ant-input-affix-wrapper:hover {
+  border-color: var(--ligth-wine);
+  border-right-width: 1px;
+}
+
+.ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+/* ========================================================================================================== */
+/*                                                TAB                                                         */
+/* ========================================================================================================== */
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--dark-red);
+  text-shadow: 0 0 0.25px currentcolor;
+}
+
+.ant-tabs-tab-btn:focus,
+.ant-tabs-tab-remove:focus,
+.ant-tabs-tab-btn:active,
+.ant-tabs-tab-remove:active {
+  color: var(--ligth-wine);
+}
+
+.ant-tabs-ink-bar {
+  position: absolute;
+  background: var(--dark-red);
+  pointer-events: none;
+}
+
+.ant-tabs-tab:hover {
+  color: var(--ligth-wine);
+}
+
+.ant-tabs-top > .ant-tabs-nav::before,
+.ant-tabs-bottom > .ant-tabs-nav::before,
+.ant-tabs-top > div > .ant-tabs-nav::before,
+.ant-tabs-bottom > div > .ant-tabs-nav::before {
+  position: absolute;
+  right: 0;
+  left: 0;
+  border-bottom: 2px solid #f0f0f0;
+  content: "";
+}
+
+/* ========================================================================================================== */
+/*                                                BUTTON                                                      */
+/* ========================================================================================================== */
+
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  color: #fff;
+  border-color: var(--ligth-wine);
+  background: var(--ligth-wine);
+}
+
+/* ========================================================================================================== */
+/*                                                                                                            */
+/* ========================================================================================================== */

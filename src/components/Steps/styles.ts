@@ -14,3 +14,17 @@ export const Container = styled.div`
   display: flex;
   justify-content: center;
 `;
+
+export const ContainerUrlLoader = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+`;
+
+export const SearchContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 800px;
+`;

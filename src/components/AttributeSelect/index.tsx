@@ -1,10 +1,10 @@
-import { Checkbox } from 'antd';
-import { Container } from './styles';
+import { Checkbox } from "antd";
+import { Container } from "./styles";
 
-import React, { useState, useContext, useEffect } from 'react';
-import { CheckboxChangeEvent } from 'antd/lib/checkbox';
-import { NewQueryContext } from '../../hooks/NewQueryContext';
-import { Api } from '../../services/api';
+import React, { useState, useContext, useEffect } from "react";
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import { NewQueryContext } from "../../hooks/NewQueryContext";
+import { pathoSpotterApi } from "../../services/api";
 
 export function AttributeSelect() {
   const { setSemanticAttributes } = useContext(NewQueryContext);
@@ -14,10 +14,13 @@ export function AttributeSelect() {
 
   const fetchAvailableCollections = async () => {
     try {
-      const response = await Api.get('/search-service/semantic-attributes');
+      const response = await pathoSpotterApi.get(
+        "/search-service/semantic-attributes"
+      );
       setData(response.data);
     } catch (error) {
-      console.error('Error on request GET:', error);
+      console.error("Error on request GET:", error);
+      setData(["Attribute 1", "Attribute 2", "Attribute 3", "Attribute 4"]);
     }
   };
 
@@ -26,29 +29,25 @@ export function AttributeSelect() {
   }, []);
 
   const onChange = (e: CheckboxChangeEvent) => {
-    if (
-      e.target.checked &&
-      e.target.id &&
-      !attributes.includes(e.target.id)
-    ) {
+    if (e.target.checked && e.target.id && !attributes.includes(e.target.id)) {
       setAttributes([...attributes, e.target.id]);
       setSemanticAttributes([...attributes, e.target.id]);
     } else {
-      setAttributes(
+      setAttributes(attributes.filter((value) => value !== e.target.id));
+      setSemanticAttributes(
         attributes.filter((value) => value !== e.target.id)
       );
-      setSemanticAttributes(attributes.filter((value) => value !== e.target.id));
     }
   };
 
   return (
     <>
-      {data.map((item) => (
-        <Container key={item.id}>
-          <div >
-            <Checkbox id={item.id} onChange={onChange} />
+      {data.map((item, index) => (
+        <Container key={index}>
+          <div>
+            <Checkbox id={`${index}`} onChange={onChange} />
             <div>
-              <h4>{item.name}</h4>
+              <h4>{item}</h4>
             </div>
           </div>
         </Container>

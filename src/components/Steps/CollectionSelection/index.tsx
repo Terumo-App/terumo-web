@@ -1,14 +1,12 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { Space, Table, Tag, Transfer } from 'antd';
-import type { ColumnsType, TableRowSelection } from 'antd/es/table/interface';
-import type { TransferItem, TransferProps } from 'antd/es/transfer';
-import difference from 'lodash/difference';
-import { LockOutlined, GlobalOutlined, CheckOutlined } from '@ant-design/icons';
+import React, { useState, useContext, useEffect } from "react";
+import { Space, Table, Tag, Transfer } from "antd";
+import type { ColumnsType, TableRowSelection } from "antd/es/table/interface";
+import type { TransferItem, TransferProps } from "antd/es/transfer";
+import difference from "lodash/difference";
+import { LockOutlined, GlobalOutlined, CheckOutlined } from "@ant-design/icons";
 
-import { Content } from '../styles';
-import { NewQueryContext } from '../../../hooks/NewQueryContext';
-
-import { Api } from '../../../services/api';
+import { Content } from "../styles";
+import { NewQueryContext } from "../../../hooks/NewQueryContext";
 
 interface TableTransferProps extends TransferProps<DataType> {
   dataSource: DataType[];
@@ -27,7 +25,7 @@ interface RecordType {
   owner: string;
 }
 
-interface DataType extends TransferItem{
+interface DataType extends TransferItem {
   key: string;
   date: string;
   type: React.ReactElement | string;
@@ -36,59 +34,62 @@ interface DataType extends TransferItem{
   owner: string;
 }
 
-const tags = ['Public', 'Private'];
+const tags = ["Public", "Private"];
 
-const mockData: RecordType[] = Array.from({ length: 20 }).map(
-  (_, i) => ({
-    key: i.toString(),
-    name: `Collection ${i + 1}`,
-    owner: `Proprietário ${i + 1}`,
-    date: '12-27-2023',
-    items: `${i + i * i}`,
-    type: tags[i % 2],
-  })
-);
+const mockData: RecordType[] = Array.from({ length: 20 }).map((_, i) => ({
+  key: i.toString(),
+  name: `Collection ${i + 1}`,
+  owner: `Proprietário ${i + 1}`,
+  date: "12-27-2023",
+  items: `${i + i * i}`,
+  type: tags[i % 2],
+}));
 
 const leftTableColumns: ColumnsType<DataType> = [
   {
-    dataIndex: 'type',
-    title: 'Type',
-    render: (tag) => <Tag style={
-      {
-        borderRadius: 5,
-        width: 77,
-        height: 25,
-        display: "flex",
-        alignItems: "center"
-      }
-    } icon={ tag === "Public" ? <GlobalOutlined  /> : <LockOutlined  /> } color={ tag === "Public" ? "success" : "warning" }>{tag}</Tag>,
+    dataIndex: "type",
+    title: "Type",
+    render: (tag) => (
+      <Tag
+        style={{
+          borderRadius: 5,
+          width: 77,
+          height: 25,
+          display: "flex",
+          alignItems: "center",
+        }}
+        icon={tag === "Public" ? <GlobalOutlined /> : <LockOutlined />}
+        color={tag === "Public" ? "success" : "warning"}
+      >
+        {tag}
+      </Tag>
+    ),
   },
   {
-    dataIndex: 'name',
-    title: 'Name',
+    dataIndex: "name",
+    title: "Name",
   },
   {
-    dataIndex: 'items',
-    title: 'Items',
+    dataIndex: "items",
+    title: "Items",
   },
   {
-    dataIndex: 'date',
-    title: 'Last Update',
+    dataIndex: "date",
+    title: "Last Update",
   },
 
   {
-    dataIndex: 'owner',
-    title: 'Owner',
+    dataIndex: "owner",
+    title: "Owner",
   },
 ];
 
 const rightTableColumns: ColumnsType<DataType> = [
   {
-    dataIndex: 'name',
-    title: 'Name',
+    dataIndex: "name",
+    title: "Name",
   },
 ];
-
 
 // Customize Table Transfer
 const TableTransfer = ({
@@ -98,9 +99,7 @@ const TableTransfer = ({
   selectedTags,
   ...restProps
 }: TableTransferProps) => (
-  
   <Transfer {...restProps}>
-    
     {({
       direction,
       filteredItems,
@@ -109,9 +108,7 @@ const TableTransfer = ({
       selectedKeys: listSelectedKeys,
       disabled: listDisabled,
     }) => {
-      
-      const columns =
-        direction === 'left' ? leftColumns : rightColumns;
+      const columns = direction === "left" ? leftColumns : rightColumns;
 
       const rowSelection: TableRowSelection<DataType> = {
         getCheckboxProps: (item) => ({
@@ -132,51 +129,57 @@ const TableTransfer = ({
         selectedRowKeys: listSelectedKeys,
       };
 
-      const { CheckableTag } = Tag;  
+      const { CheckableTag } = Tag;
 
       return (
-        <>   
-        {direction === "left" &&
-        <div style={
-          {
-            marginTop: 0,
-            marginBottom: 15
-          }
-        }>
-          <Space size={[0, 8]} wrap>
-            {tags.map((tag) => (
-              <CheckableTag
-                key={tag}
-                checked={selectedTags.includes(tag)}
-                onChange={(checked) => handleChange(tag, checked)}               
-              >
-                {tag}
-                {selectedTags.includes(tag) && <CheckOutlined style={{
-                  marginLeft: 8
-                }} />}
-                
-              </CheckableTag>
-            ))}
-          </Space>
-        </div>
-        }
-        <Table
-          rowSelection={rowSelection}
-          columns={columns}
-          dataSource={filteredItems}
-          size="middle"
-          style={{ pointerEvents: listDisabled ? 'none' : undefined, minHeight: 350 }}
-          onRow={({ key, disabled: itemDisabled }) => ({
-            onClick: () => {
-              if (itemDisabled || listDisabled) return;
-              onItemSelect(
-                key as string,
-                !listSelectedKeys.includes(key as string)
-              );
-            },
-          })}
-          pagination={{ pageSize: 5 }}
-        />
+        <>
+          {direction === "left" && (
+            <div
+              style={{
+                marginTop: 0,
+                marginBottom: 15,
+              }}
+            >
+              <Space size={[0, 8]} wrap>
+                {tags.map((tag) => (
+                  <CheckableTag
+                    key={tag}
+                    checked={selectedTags.includes(tag)}
+                    onChange={(checked) => handleChange(tag, checked)}
+                  >
+                    {tag}
+                    {selectedTags.includes(tag) && (
+                      <CheckOutlined
+                        style={{
+                          marginLeft: 8,
+                        }}
+                      />
+                    )}
+                  </CheckableTag>
+                ))}
+              </Space>
+            </div>
+          )}
+          <Table
+            rowSelection={rowSelection}
+            columns={columns}
+            dataSource={filteredItems}
+            size="middle"
+            style={{
+              pointerEvents: listDisabled ? "none" : undefined,
+              minHeight: 350,
+            }}
+            onRow={({ key, disabled: itemDisabled }) => ({
+              onClick: () => {
+                if (itemDisabled || listDisabled) return;
+                onItemSelect(
+                  key as string,
+                  !listSelectedKeys.includes(key as string)
+                );
+              },
+            })}
+            pagination={{ pageSize: 5 }}
+          />
         </>
       );
     }}
@@ -184,55 +187,50 @@ const TableTransfer = ({
 );
 
 export function CollectionSelectionStep() {
-    const { setCollection } = useContext(NewQueryContext);
+  const { setCollection, newQueryData } = useContext(NewQueryContext);
 
-    const [targetKeys, setTargetKeys] = useState<string[]>([]);
-    const [selectedTags, setSelectedTags] = useState<string[]>(tags);
-    const [globalData, setGlobalData] = useState<RecordType[]>([]);
-    const [data, setdata] = useState<RecordType[]>(mockData);
+  const selectedtargetKeys = () => {
+    const collections = newQueryData.collections;
 
-
-
-    const fetchAvailableCollections = async () => {
-      try {
-        const response = await Api.get('/image-service/collection');
-        setGlobalData(response.data);
-        setdata(response.data);
-      } catch (error) {
-        console.error('Error on request GET:', error);
-      }
-    };
-
-    useEffect(() => { 
-      fetchAvailableCollections();
-    }, []);
-
-
-
-    const onChange = (nextTargetKeys: string[]) => {
-      setTargetKeys(nextTargetKeys);
-      const selectedCollections = nextTargetKeys.map((item) => {
-        return globalData[Number(item)];
-      });
-  
-      setCollection(selectedCollections);
-    };
-
-    const filterOption = (inputValue: string, item: RecordType) => {
-      console.log(item.type)
-
-      return item.name.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1;
+    if (!collections) {
+      return [];
     }
 
-    const handleChange = (tag: string, checked: boolean) => {
-      const nextSelectedTags = checked
-        ? [...selectedTags, tag]
-        : selectedTags.filter((t: string) => t !== tag);
-      console.log('You are interested in: ', nextSelectedTags);
-      setSelectedTags(nextSelectedTags);
-      setdata(globalData.filter((item) => nextSelectedTags.includes(item.type as string)));
-    };
-    
+    return collections.map((item) => {
+      return item.key as string;
+    });
+  };
+
+  const [targetKeys, setTargetKeys] = useState<string[]>(selectedtargetKeys);
+  const [selectedTags, setSelectedTags] = useState<string[]>(tags);
+  const [data, setData] = useState<RecordType[]>(mockData);
+
+  const onChange = (nextTargetKeys: string[]) => {
+    setTargetKeys(nextTargetKeys);
+    console.log(nextTargetKeys);
+    const selectedCollections = nextTargetKeys.map((item) => {
+      return data[Number(item)];
+    });
+
+    setCollection(selectedCollections);
+  };
+
+  const filterOption = (inputValue: string, item: RecordType) => {
+    return item.name.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1;
+  };
+
+  const handleChange = (tag: string, checked: boolean) => {
+    const nextSelectedTags = checked
+      ? [...selectedTags, tag]
+      : selectedTags.filter((t: string) => t !== tag);
+    console.log("You are interested in: ", nextSelectedTags);
+    setSelectedTags(nextSelectedTags);
+
+    setData(
+      mockData.filter((item) => nextSelectedTags.includes(item.type as string))
+    );
+  };
+
   return (
     <Content>
       <h2>Collection selection</h2>
@@ -245,11 +243,11 @@ export function CollectionSelectionStep() {
         filterOption={filterOption}
         leftColumns={leftTableColumns}
         rightColumns={rightTableColumns}
-        titles={['Available collections', 'Selected collections']}
+        titles={["Available collections", "Selected collections"]}
         pagination={false}
         selectedTags={selectedTags}
         handleChange={handleChange}
-        />
+      />
     </Content>
   );
 }

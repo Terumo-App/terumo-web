@@ -1,103 +1,96 @@
-import React, { useState } from 'react';
-import { DownOutlined } from '@ant-design/icons';
-import {
-  Button,
-  Dropdown,
-  Form,
-  Input,
-  Modal,
-  Radio,
-  Switch,
-} from 'antd';
-import { Space, Table, Tag } from 'antd';
-import type { SizeType } from 'antd/es/config-provider/SizeContext';
-import type { ColumnsType, TableProps } from 'antd/es/table';
-import type { TableRowSelection } from 'antd/es/table/interface';
-import { FiHardDrive } from 'react-icons/fi';
+import React, { useEffect, useState } from "react";
+import { DownOutlined } from "@ant-design/icons";
+import { Dropdown, Form, Input, Modal, Radio } from "antd";
+import { Space, Table, Tag } from "antd";
+import type { SizeType } from "antd/es/config-provider/SizeContext";
+import type { ColumnsType, TableProps } from "antd/es/table";
+import type { TableRowSelection } from "antd/es/table/interface";
+import { FiHardDrive } from "react-icons/fi";
 
-import { Header } from '../../components/Header';
-import { ButtonPrimary, Container, PageTittle } from './styles';
+import { Header } from "../../components/Header";
+import { ButtonPrimary, Container, PageTittle } from "./styles";
 
-import { LockOutlined, GlobalOutlined } from '@ant-design/icons';
+import { LockOutlined, GlobalOutlined } from "@ant-design/icons";
+import { getCollectionsQuery } from "../../services/pathoSpotter";
 
-const tags = ['Public', 'Private'];
 const items = [
-  { key: '1', label: 'Edit' },
-  { key: '2', label: 'Remove' },
-  { key: '3', label: 'Save' },
+  { key: "1", label: "Edit" },
+  { key: "2", label: "Remove" },
+  { key: "3", label: "Save" },
 ];
 
-export function Collections() {
-  interface DataType {
-    key: string;
-    date: string;
-    type: React.ReactElement | string;
-    name: string;
-    items: number | string;
-    owner: string;
-  }
+export interface DataType {
+  key: string;
+  date: string;
+  type: React.ReactElement | string;
+  name: string;
+  items: number | string;
+  owner: string;
+}
 
+export function Collections() {
   type TablePaginationPosition =
-    | 'topLeft'
-    | 'topCenter'
-    | 'topRight'
-    | 'bottomLeft'
-    | 'bottomCenter'
-    | 'bottomRight';
+    | "topLeft"
+    | "topCenter"
+    | "topRight"
+    | "bottomLeft"
+    | "bottomCenter"
+    | "bottomRight";
 
   const columns: ColumnsType<DataType> = [
     {
-      dataIndex: 'type',
-      title: 'Type',
+      dataIndex: "type",
+      title: "Type",
       render: (tag) => (
         <Tag
           style={{
             borderRadius: 5,
             width: 77,
             height: 25,
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
           }}
-          icon={
-            tag === 'Public' ? <GlobalOutlined /> : <LockOutlined />
-          }
-          color={tag === 'Public' ? 'success' : 'warning'}>
+          icon={tag === "Public" ? <GlobalOutlined /> : <LockOutlined />}
+          color={tag === "Public" ? "success" : "warning"}
+        >
           {tag}
         </Tag>
       ),
     },
     {
-      dataIndex: 'name',
-      title: 'Name',
+      dataIndex: "name",
+      title: "Name",
     },
     {
-      dataIndex: 'items',
-      title: 'Items',
+      dataIndex: "items",
+      title: "Items",
     },
     {
-      dataIndex: 'date',
-      title: 'Last Update',
+      dataIndex: "date",
+      title: "Last Update",
     },
     {
-      dataIndex: 'owner',
-      title: 'Owner',
+      dataIndex: "owner",
+      title: "Owner",
     },
     {
-      dataIndex: 'action',
-      title: 'Action',
+      dataIndex: "action",
+      title: "Action",
       render: (key) => (
         <Space size="middle">
           <a
             style={{
-              color: '#702331',
-            }}>
+              color: "#702331",
+            }}
+          >
             View
           </a>
           <Dropdown menu={{ items }}>
             <a
               style={{
-                color: '#702331',
-              }}>
+                color: "#702331",
+              }}
+            >
               More <DownOutlined />
             </a>
           </Dropdown>
@@ -106,22 +99,18 @@ export function Collections() {
     },
   ];
 
-  const data: DataType[] = [];
-  for (let i = 1; i <= 20; i++) {
-    data.push({
-      key: i.toString(),
-      name: `Collection ${i + 1}`,
-      owner: `Proprietário ${i + 1}`,
-      date: '12-27-2023',
-      items: `${i + i * i}`,
-      type: tags[i % 2],
+  const [data, setData] = useState<any>([]);
+
+  useEffect(() => {
+    getCollectionsQuery().then((data) => {
+      setData(data);
     });
-  }
+  }, []);
 
-  const defaultTitle = () => 'Here is title';
-  const defaultFooter = () => 'Here is footer';
+  const defaultTitle = () => "Here is title";
+  const defaultFooter = () => "Here is footer";
 
-  const [size, setSize] = useState<SizeType>('large');
+  const [size, setSize] = useState<SizeType>("large");
   const [showTitle, setShowTitle] = useState(false);
   const [showfooter, setShowFooter] = useState(false);
   const [rowSelection, setRowSelection] = useState<
@@ -129,11 +118,8 @@ export function Collections() {
   >({});
   const [hasData, setHasData] = useState(true);
   const [tableLayout, setTableLayout] = useState();
-  const [top, setTop] = useState<TablePaginationPosition | 'none'>(
-    'none'
-  );
-  const [bottom, setBottom] =
-    useState<TablePaginationPosition>('bottomRight');
+  const [top, setTop] = useState<TablePaginationPosition | "none">("none");
+  const [bottom, setBottom] = useState<TablePaginationPosition>("bottomRight");
   const [ellipsis, setEllipsis] = useState(false);
   const [yScroll, setYScroll] = useState(false);
   const [xScroll, setXScroll] = useState<string>();
@@ -143,16 +129,16 @@ export function Collections() {
     scroll.y = 240;
   }
   if (xScroll) {
-    scroll.x = '100vw';
+    scroll.x = "100vw";
   }
 
   const tableColumns = columns.map((item) => ({
     ...item,
     ellipsis,
   }));
-  if (xScroll === 'fixed') {
+  if (xScroll === "fixed") {
     tableColumns[0].fixed = true;
-    tableColumns[tableColumns.length - 1].fixed = 'right';
+    tableColumns[tableColumns.length - 1].fixed = "right";
   }
 
   const tableProps: TableProps<DataType> = {
@@ -198,13 +184,15 @@ export function Collections() {
         <>
           <div
             style={{
-              display: 'flex',
-              flexDirection: 'column',
+              display: "flex",
+              flexDirection: "column",
               marginTop: -20,
-            }}>
+            }}
+          >
             <ButtonPrimary
               onClick={showModal}
-              style={{ marginBottom: 20, width: 200, height: 50 }}>
+              style={{ marginBottom: 20, width: 200, height: 50 }}
+            >
               Add Collection
             </ButtonPrimary>
 
@@ -213,12 +201,9 @@ export function Collections() {
               open={isModalOpen}
               onOk={handleOk}
               okText="Add"
-              onCancel={handleCancel}>
-              
-              <Form
-                form={form}
-                layout="vertical"
-                autoComplete="off">
+              onCancel={handleCancel}
+            >
+              <Form form={form} layout="vertical" autoComplete="off">
                 <Form.Item label="Type:">
                   <Radio.Group>
                     <Radio value="public"> Public </Radio>
