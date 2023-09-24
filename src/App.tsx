@@ -10,6 +10,7 @@ import { SavedQueries } from './pages/SavedQueries';
 import { Help } from './pages/Help';
 import { LogIn } from './pages/LogIn';
 import { Register } from './pages/Register';
+import { ViewCollection } from './pages/ViewCollection';
 
 export function App() {
   return (
@@ -19,6 +20,8 @@ export function App() {
         <Route path="/" element={<NewQuery />} />
         <Route path="/query-result" element={<QueryResult />} />
         <Route path="/collections" element={<Collections />} />
+        <Route path="/collections/:key" element={<ViewCollection />} />
+
         <Route path="/saved-queries" element={<SavedQueries />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/help" element={<Help />} />

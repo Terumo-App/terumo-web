@@ -3,6 +3,7 @@ import { Avatar, Button, Card, Image, List, Skeleton } from "antd";
 import { ButtonPrimary } from "../../pages/NewQuery/styles";
 import { pathoSpotterApi } from "../../services/api";
 import { NewQueryContext } from "../../hooks/NewQueryContext";
+import { getRandomInteger } from "../../utils/utils";
 
 interface DataType {
   image_url: string;
@@ -13,22 +14,13 @@ interface DataType {
   };
   nat?: string;
   loading: boolean;
-}
-
-interface BodyData {
-  image_base64: string | null | undefined;
-  semantic_attributes: AtributeItemData[];
-}
-
-interface AtributeItemData {
-  id: string;
-  name: string;
+  score: number | string;
 }
 
 const count = 6;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
 
-export function ImageList() {
+export function ImageListResult() {
   const { newQueryData } = useContext(NewQueryContext);
 
   const [initLoading, setInitLoading] = useState(true);
@@ -98,52 +90,26 @@ export function ImageList() {
   //   ]
   // }
 
-  const fetchQueryImages = async () => {
-    try {
-      // body.image_base64 = (newQueryData.image?.thumbUrl as string).replace('data:image/png;base64,', '');
+   useEffect(() => {
+     fetch(fakeDataUrl)
+       .then((res) => res.json())
+       .then((res) => {
+         setInitLoading(false);
 
-      const body = require("../../assets/queryMock.json");
-      console.log(body);
+         console.log(res.results);
+         const newData = data.concat(res.results);
+         const aux = newData.map((item, index) => {return {
+           ...item,
+           picture: {
+             thumbnail: imageList[index],
+           },
+           score: `0.${getRandomInteger(9000, 9999)}`,
+         }})
 
-      const response = await pathoSpotterApi.post(
-        "/search-service/search",
-        body
-      );
-      setInitLoading(false);
-      console.log(response.data);
-
-      // const newData = data.concat(response.data);
-
-      setData(response.data);
-      setList(response.data);
-    } catch (error) {
-      console.error("Error on request GET:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchQueryImages();
-  }, []);
-
-  // useEffect(() => {
-  //   fetch(fakeDataUrl)
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       setInitLoading(false);
-
-  //       console.log(res.results);
-  //       const newData = data.concat(res.results);
-  //       const aux = newData.map((item, index) => {return {
-  //         ...item,
-  //         picture: {
-  //           thumbnail: imageList[index],
-  //         }
-  //       }})
-
-  //       setData(aux);
-  //       setList(aux);
-  //     });
-  // }, []);
+         setData(aux.sort((a, b) => Number(a.score) - Number(b.score)));
+         setList(aux.sort((a, b) => Number(a.score) - Number(b.score)));
+       });
+   }, []);
 
   const onLoadMore = () => {
     setLoading(true);
@@ -160,49 +126,17 @@ export function ImageList() {
             picture: {
               thumbnail: imageList[index],
             },
+            score: `0.${getRandomInteger(9000, 9999)}`,
           };
         });
         setData(aux);
         setList(aux);
         setLoading(false);
-        // Resetting window's offsetTop so as to display react-virtualized demo underfloor.
-        // In real scene, you can using public method of react-virtualized:
-        // https://stackoverflow.com/questions/46700726/how-to-use-public-method-updateposition-of-react-virtualized
+
         window.dispatchEvent(new Event("resize"));
       });
   };
 
-  // const onLoadMore2 = () => {
-  //   setLoading(true);
-  //   setList(
-  //     data.concat(
-  //       [...new Array(count)].map(() => ({
-  //         loading: true,
-  //         name: {},
-  //         picture: {},
-  //       }))
-  //     )
-  //   );
-
-  //   const results = imageList.filter((x, index) => index < 2).map(item => {
-  //     return {
-  //       loading: true,
-  //       name: {},
-  //       picture: {
-  //         large: item,
-  //         medium: item,
-  //         thumbnail: item,
-  //       },
-  //     }
-  //   });
-
-  //   const newData = results;
-  //   setData(newData);
-  //   setList(newData);
-  //   setLoading(false);
-
-  //   window.dispatchEvent(new Event('resize'));
-  // };
 
   const loadMore =
     !initLoading && !loading ? (
@@ -247,7 +181,7 @@ export function ImageList() {
                 width={400}
                 height={350}
                 style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
-                src={item.image_url}
+                src={item.picture.thumbnail}
               />
             }
           >
@@ -259,7 +193,11 @@ export function ImageList() {
                 marginTop: -10,
               }}
             >
-              <h3>Score:</h3> &nbsp; <p style={{ fontSize: 16 }}>0.9839</p>
+              <h3>Score:</h3> &nbsp; <p style={{ fontSize: 16 }}>{item.score}</p>           
+            </div>
+
+            <div>
+              
             </div>
           </Card>
         </List.Item>

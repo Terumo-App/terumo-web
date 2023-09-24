@@ -5,7 +5,7 @@ import { Space, Table, Tag } from "antd";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
-import { FiHardDrive } from "react-icons/fi";
+import { FiBookmark, FiHardDrive } from "react-icons/fi";
 
 import { Header } from "../../components/Header";
 import { ButtonPrimary, Container, PageTittle } from "./styles";
@@ -16,8 +16,14 @@ import { getCollectionsQuery } from "../../services/pathoSpotter";
 const items = [
   { key: "1", label: "Edit" },
   { key: "2", label: "Remove" },
-  { key: "3", label: "Save" },
+  { key: "3", label: "Share" },
+
 ];
+
+/**  { key: '1', label: 'Upload Images' },
+  { key: '2', label: 'Share' },
+  { key: '3', label: 'Add to favorite' },
+  { key: '4', label: 'Download' }, */
 
 export interface DataType {
   key: string;
@@ -76,9 +82,10 @@ export function Collections() {
     {
       dataIndex: "action",
       title: "Action",
-      render: (key) => (
-        <Space size="middle">
-          <a
+      render: (key, data) => (
+        <Space size="middle" style={{ display: 'flex', gap: 20, alignItems: 'center'}}>
+          
+          <a href={`http://localhost:3000/collections/${data.key}`}
             style={{
               color: "#702331",
             }}
@@ -94,6 +101,10 @@ export function Collections() {
               More <DownOutlined />
             </a>
           </Dropdown>
+          
+          <div style={{ alignItems: "center", justifyContent: 'center', display: 'flex'}}>
+            <FiBookmark fill={"#702331"} style={{ width: 20, height: 20,color: "#702331" }}/>
+          </div>
         </Space>
       ),
     },
@@ -106,6 +117,18 @@ export function Collections() {
       setData(data);
     });
   }, []);
+
+  const metadatas = ["Forrado",
+    "Gemido", 
+    "Cirurgião",
+    "Nota",
+    "Granada",
+    "Eco",
+    "Bigode",
+    "Adolescente",
+    "Partido",
+    "Dinamite",
+    ];
 
   const defaultTitle = () => "Here is title";
   const defaultFooter = () => "Here is footer";
@@ -145,7 +168,7 @@ export function Collections() {
     bordered: false,
     loading: false,
     expandable: {
-      expandedRowRender: (record: DataType) => <p>{record.owner}</p>,
+      expandedRowRender: (record: DataType) => <><h4>Metadatas:</h4><Tag>{metadatas[7]}</Tag> <Tag>{metadatas[3]}</Tag> <Tag>{metadatas[5]}</Tag> <h4 style={{marginTop: 10}}>Associated Articles</h4></>,
     },
     size,
     title: showTitle ? defaultTitle : undefined,

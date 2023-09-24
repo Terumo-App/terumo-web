@@ -191,16 +191,16 @@ export function Register() {
                 }
                 options={[
                   {
-                    value: "graduationStudent",
-                    label: "Graduation Student",
+                    value: "undegraduateStudent",
+                    label: "Undegraduate Student",
                   },
                   {
-                    value: "masterDegree",
-                    label: "Master's Degree",
+                    value: "graduateStudent",
+                    label: "Graduate Student",
                   },
                   {
-                    value: "phDStudent",
-                    label: "PhD Student",
+                    value: "faculty",
+                    label: "Faculty",
                   },
                   {
                     value: "researcher",
@@ -222,12 +222,6 @@ export function Register() {
               />
             </Form.Item>
           </div>
-
-          {/*Undegraduate Student
-            Graduate Student
-            Faculty
-            Researcher
-            other*/}
 
           <Form.Item
             name="organization"

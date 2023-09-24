@@ -6,7 +6,8 @@ import { FiCheck } from 'react-icons/fi';
 import styles from './Styles.module.scss';
 import { NewQueryContext } from '../../hooks/NewQueryContext';
 import { Button } from 'antd';
-import { ImageList } from '../../components/ImageList';
+import { ImageListResult } from '../../components/ImageListResult';
+import { getRandomInteger } from '../../utils/utils';
 
 const itemData = [
   {
@@ -76,12 +77,12 @@ export function QueryResult() {
           <InfoQueryBox>
             <div>
               <span>Items Returned: </span>
-              <span>135</span>
+              <span>{getRandomInteger(20, 49)}</span>
             </div>
 
             <div>
               <span>Search Time: </span>
-              <span>0.127s</span>
+              <span>{getRandomInteger(3000, 3999)}ms</span>
             </div>
           </InfoQueryBox>
 
@@ -102,7 +103,7 @@ export function QueryResult() {
           </Button>
 
           <ImageListContent>
-            <ImageList />
+            <ImageListResult />
           </ImageListContent>
           
           

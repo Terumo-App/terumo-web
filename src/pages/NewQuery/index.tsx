@@ -42,8 +42,7 @@ export function NewQuery() {
   const steps = [
     {
       title: "",
-      // content: <Content><h2>Collection selection</h2> <CollectionsSelect /> </Content> ,
-      content: <CollectionSelectionStep />,
+      content: <ImageUploadStep />,
     },
     {
       title: "",
@@ -51,7 +50,8 @@ export function NewQuery() {
     },
     {
       title: "",
-      content: <ImageUploadStep />,
+       // content: <Content><h2>Collection selection</h2> <CollectionsSelect /> </Content> ,
+      content: <CollectionSelectionStep />,
     },
     {
       title: "",
@@ -59,7 +59,7 @@ export function NewQuery() {
     },
     {
       title: "",
-      content: <LoadingSearchStep />,
+      content: <LoadingSearchStep message="Loading..." />,
     },
   ];
 
@@ -126,7 +126,7 @@ export function NewQuery() {
                   return;
                 }
                 next();
-                // createNewQuery();
+                createNewQuery();
                 redirectResult();
               }}
             >
