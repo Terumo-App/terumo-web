@@ -11,6 +11,7 @@ export const GlobalStyle = createGlobalStyle`
     --grey: #858585;
     --dark-red: #702331;
     --ligth-wine: #A33B4E;
+    --active-red: #610111;
     --red: #FF300F;
     --brown: #473D3D;
   }
@@ -75,3 +76,14 @@ export const ButtonSecondary = styled.button`
 
   margin-bottom: 20px;
 `;
+
+export const contentStyle: React.CSSProperties = {
+  minHeight: "560px",
+  textAlign: "center",
+  color: "#f0f0f0",
+  backgroundColor: "#FFF",
+  borderRadius: "10px",
+  border: `1px solid #f0f0f0`,
+  marginTop: 16,
+  paddingBottom: 40,
+};

@@ -1,9 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Avatar, Button, Card, Image, List, Skeleton } from "antd";
+import {
+  Avatar,
+  Button,
+  Card,
+  Divider,
+  Dropdown,
+  Image,
+  List,
+  MenuProps,
+  Modal,
+  Skeleton,
+} from "antd";
 import { ButtonPrimary } from "../../pages/NewQuery/styles";
 import { pathoSpotterApi } from "../../services/api";
 import { NewQueryContext } from "../../hooks/NewQueryContext";
 import { getRandomInteger } from "../../utils/utils";
+import styles from "./Styles.module.scss";
+import { FiBookmark, FiInfo, FiMoreVertical } from "react-icons/fi";
 
 interface DataType {
   image_url: string;
@@ -21,6 +34,49 @@ const count = 6;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
 
 export function ImageListResult() {
+  const [urlImageCurrent, setUrlImageCurrent] = useState<string>();
+
+  const items: MenuProps["items"] = [
+    {
+      label: (
+        <a
+          rel="noopener noreferrer"
+          href={`http://localhost:3000/${urlImageCurrent}`}
+        >
+          New query
+        </a>
+      ),
+      key: "0",
+    },
+    {
+      label: (
+        <a rel="noopener noreferrer" href="http://localhost:3000/login">
+          Download
+        </a>
+      ),
+      key: "1",
+    },
+  ];
+  // ============ Modal Info ======================
+  const showMoreInfoModal = () => {
+    Modal.info({
+      title: "Image explainability content",
+      content: (
+        <div>
+          <p>CONTENT</p>
+          <p>CONTENT</p>
+          <p>CONTENT</p>
+          <p>CONTENT</p>
+          <p>CONTENT</p>
+          <p>CONTENT</p>
+        </div>
+      ),
+      onOk() {},
+      style: { width: 800, height: 800 },
+      width: 900,
+    });
+  };
+  // =======================================
   const { newQueryData } = useContext(NewQueryContext);
 
   const [initLoading, setInitLoading] = useState(true);
@@ -90,26 +146,28 @@ export function ImageListResult() {
   //   ]
   // }
 
-   useEffect(() => {
-     fetch(fakeDataUrl)
-       .then((res) => res.json())
-       .then((res) => {
-         setInitLoading(false);
+  useEffect(() => {
+    fetch(fakeDataUrl)
+      .then((res) => res.json())
+      .then((res) => {
+        setInitLoading(false);
 
-         console.log(res.results);
-         const newData = data.concat(res.results);
-         const aux = newData.map((item, index) => {return {
-           ...item,
-           picture: {
-             thumbnail: imageList[index],
-           },
-           score: `0.${getRandomInteger(9000, 9999)}`,
-         }})
+        console.log(res.results);
+        const newData = data.concat(res.results);
+        const aux = newData.map((item, index) => {
+          return {
+            ...item,
+            picture: {
+              thumbnail: imageList[index],
+            },
+            score: `0.${getRandomInteger(9000, 9999)}`,
+          };
+        });
 
-         setData(aux.sort((a, b) => Number(a.score) - Number(b.score)));
-         setList(aux.sort((a, b) => Number(a.score) - Number(b.score)));
-       });
-   }, []);
+        setData(aux.sort((a, b) => Number(a.score) - Number(b.score)));
+        setList(aux.sort((a, b) => Number(a.score) - Number(b.score)));
+      });
+  }, []);
 
   const onLoadMore = () => {
     setLoading(true);
@@ -136,7 +194,6 @@ export function ImageListResult() {
         window.dispatchEvent(new Event("resize"));
       });
   };
-
 
   const loadMore =
     !initLoading && !loading ? (
@@ -171,33 +228,76 @@ export function ImageListResult() {
       loadMore={loadMore}
       dataSource={list}
       style={{ marginInline: 60 }}
-      renderItem={(item) => (
+      renderItem={(item, index) => (
         <List.Item>
           <Card
             hoverable
             style={{ width: 420, borderRadius: 10, paddingTop: 10 }}
             cover={
-              <Image
-                width={400}
-                height={350}
-                style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
-                src={item.picture.thumbnail}
-              />
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "end",
+                    paddingRight: 10,
+                    marginBottom: 10,
+                    gap: 12,
+                  }}
+                >
+                  <FiBookmark
+                    fill={index < 5 ? "#000" : "#FFF"}
+                    style={{ width: 25, height: 25 }}
+                  />
+                  <Dropdown
+                    menu={{
+                      items,
+                    }}
+                    onOpenChange={() => {
+                      setUrlImageCurrent(item.picture.thumbnail);
+                    }}
+                  >
+                    <FiMoreVertical style={{ width: 25, height: 25 }} />
+                  </Dropdown>
+                </div>
+                <Image
+                  width={400}
+                  height={350}
+                  style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
+                  src={item.picture.thumbnail}
+                />
+              </>
             }
           >
             <div
               style={{
                 display: "flex",
                 justifyContent: "center",
-                marginBottom: -20,
+                marginBottom: -5,
                 marginTop: -10,
               }}
             >
-              <h3>Score:</h3> &nbsp; <p style={{ fontSize: 16 }}>{item.score}</p>           
+              <h3>Score:</h3>
+              <p style={{ fontSize: 16 }}>{item.score}</p>
             </div>
 
-            <div>
-              
+            <Divider
+              style={{
+                marginBottom: 5,
+                marginTop: 0,
+              }}
+            ></Divider>
+
+            <div className={styles.button__container}>
+              <button
+                type="button"
+                className={styles.button}
+                onClick={showMoreInfoModal}
+              >
+                <span className={styles.button__text}>More info</span>
+                <span className={styles.button__icon}>
+                  <FiInfo />
+                </span>
+              </button>
             </div>
           </Card>
         </List.Item>

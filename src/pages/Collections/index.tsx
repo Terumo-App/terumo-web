@@ -1,23 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DownOutlined } from "@ant-design/icons";
-import { Dropdown, Form, Input, Modal, Radio } from "antd";
+import {
+  Dropdown,
+  Form,
+  Input,
+  InputRef,
+  Modal,
+  Radio,
+  message,
+  theme,
+} from "antd";
 import { Space, Table, Tag } from "antd";
 import type { SizeType } from "antd/es/config-provider/SizeContext";
 import type { ColumnsType, TableProps } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
-import { FiBookmark, FiHardDrive } from "react-icons/fi";
+import { FiBookmark, FiHardDrive, FiPlus } from "react-icons/fi";
 
 import { Header } from "../../components/Header";
 import { ButtonPrimary, Container, PageTittle } from "./styles";
 
 import { LockOutlined, GlobalOutlined } from "@ant-design/icons";
 import { getCollectionsQuery } from "../../services/pathoSpotter";
+import { TweenOneGroup } from "rc-tween-one";
 
 const items = [
   { key: "1", label: "Edit" },
   { key: "2", label: "Remove" },
   { key: "3", label: "Share" },
-
 ];
 
 /**  { key: '1', label: 'Upload Images' },
@@ -35,6 +44,66 @@ export interface DataType {
 }
 
 export function Collections() {
+  // ================ metadatas ==================
+  const [tags, setTags] = useState(["default"]);
+  const [inputVisible, setInputVisible] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const inputRef = useRef<InputRef>(null);
+
+  useEffect(() => {
+    if (inputVisible) {
+      inputRef.current?.focus();
+    }
+  }, [inputVisible]);
+
+  const handleClose = (removedTag: string) => {
+    const newTags = tags.filter((tag) => tag !== removedTag);
+    console.log(newTags);
+    setTags(newTags);
+  };
+
+  const showInput = () => {
+    setInputVisible(true);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleInputConfirm = () => {
+    if (inputValue && tags.indexOf(inputValue) === -1) {
+      setTags([...tags, inputValue]);
+    }
+    setInputVisible(false);
+    setInputValue("");
+  };
+
+  const forMap = (tag: string) => {
+    const tagElem = (
+      <Tag
+        closable
+        onClose={(e) => {
+          e.preventDefault();
+          handleClose(tag);
+        }}
+      >
+        {tag}
+      </Tag>
+    );
+    return (
+      <span key={tag} style={{ display: "inline-block" }}>
+        {tagElem}
+      </span>
+    );
+  };
+
+  const tagChild = tags.map(forMap);
+
+  const tagPlusStyle: React.CSSProperties = {
+    background: "",
+    borderStyle: "dashed",
+  };
+  // =============================================
   type TablePaginationPosition =
     | "topLeft"
     | "topCenter"
@@ -83,9 +152,12 @@ export function Collections() {
       dataIndex: "action",
       title: "Action",
       render: (key, data) => (
-        <Space size="middle" style={{ display: 'flex', gap: 20, alignItems: 'center'}}>
-          
-          <a href={`http://localhost:3000/collections/${data.key}`}
+        <Space
+          size="middle"
+          style={{ display: "flex", gap: 20, alignItems: "center" }}
+        >
+          <a
+            href={`http://localhost:3000/collections/${data.key}`}
             style={{
               color: "#702331",
             }}
@@ -101,9 +173,18 @@ export function Collections() {
               More <DownOutlined />
             </a>
           </Dropdown>
-          
-          <div style={{ alignItems: "center", justifyContent: 'center', display: 'flex'}}>
-            <FiBookmark fill={"#702331"} style={{ width: 20, height: 20,color: "#702331" }}/>
+
+          <div
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              display: "flex",
+            }}
+          >
+            <FiBookmark
+              fill={Number(data.key) < 6 ? "#702331" : "#FFF"}
+              style={{ width: 20, height: 20, color: "#702331" }}
+            />
           </div>
         </Space>
       ),
@@ -118,8 +199,9 @@ export function Collections() {
     });
   }, []);
 
-  const metadatas = ["Forrado",
-    "Gemido", 
+  const metadatas = [
+    "Forrado",
+    "Marionete",
     "Cirurgião",
     "Nota",
     "Granada",
@@ -128,7 +210,7 @@ export function Collections() {
     "Adolescente",
     "Partido",
     "Dinamite",
-    ];
+  ];
 
   const defaultTitle = () => "Here is title";
   const defaultFooter = () => "Here is footer";
@@ -168,7 +250,14 @@ export function Collections() {
     bordered: false,
     loading: false,
     expandable: {
-      expandedRowRender: (record: DataType) => <><h4>Metadatas:</h4><Tag>{metadatas[7]}</Tag> <Tag>{metadatas[3]}</Tag> <Tag>{metadatas[5]}</Tag> <h4 style={{marginTop: 10}}>Associated Articles</h4></>,
+      expandedRowRender: (record: DataType) => (
+        <>
+          <h4>Metadatas:</h4>
+          <Tag>{metadatas[7]}</Tag> <Tag>{metadatas[3]}</Tag>
+          <Tag>{metadatas[5]}</Tag>
+          <h4 style={{ marginTop: 10 }}>Associated Articles</h4>
+        </>
+      ),
     },
     size,
     title: showTitle ? defaultTitle : undefined,
@@ -188,6 +277,7 @@ export function Collections() {
 
   const handleOk = () => {
     setIsModalOpen(false);
+    message.success(`Collection added successfully!`);
   };
 
   const handleCancel = () => {
@@ -235,6 +325,50 @@ export function Collections() {
                 </Form.Item>
                 <Form.Item label="Name:">
                   <Input placeholder="Type collection name" />
+                </Form.Item>
+                <Form.Item label="Metadatas:">
+                  <>
+                    <div style={{ marginBottom: 16 }}>
+                      <TweenOneGroup
+                        enter={{
+                          scale: 0.8,
+                          opacity: 0,
+                          type: "from",
+                          duration: 100,
+                        }}
+                        onEnd={(e: any) => {
+                          if (e.type === "appear" || e.type === "enter") {
+                            (e.target as any).style = "display: inline-block";
+                          }
+                        }}
+                        leave={{
+                          opacity: 0,
+                          width: 0,
+                          scale: 0,
+                          duration: 200,
+                        }}
+                        appear={false}
+                      >
+                        {tagChild}
+                      </TweenOneGroup>
+                    </div>
+                    {inputVisible ? (
+                      <Input
+                        ref={inputRef}
+                        type="text"
+                        size="small"
+                        style={{ width: 78 }}
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onBlur={handleInputConfirm}
+                        onPressEnter={handleInputConfirm}
+                      />
+                    ) : (
+                      <Tag onClick={showInput} style={tagPlusStyle}>
+                        <FiPlus /> New Metadata
+                      </Tag>
+                    )}
+                  </>
                 </Form.Item>
               </Form>
             </Modal>

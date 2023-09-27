@@ -1,20 +1,21 @@
-import logoImg from '../../assets/logoPS.svg';
-import Image from '../../assets/image.svg';
+import logoImg from "../../assets/logoPS.svg";
+import Image from "../../assets/image.svg";
 
-import { Container, Content } from './styles';
-import { FiBell } from 'react-icons/fi';
-import { Drawer } from '../Drawer';
-import { Avatar, Badge, Dropdown, MenuProps } from 'antd';
-import styles from './Styles.module.scss';
+import { Container, Content } from "./styles";
+import { FiBell } from "react-icons/fi";
+import { Drawer } from "../Drawer";
+import { Avatar, Badge, Dropdown, MenuProps } from "antd";
+import styles from "./Styles.module.scss";
+import { getRandomInteger } from "../../utils/utils";
 
-const items: MenuProps['items'] = [
+const items: MenuProps["items"] = [
   {
     label: (
-      <a rel="noopener noreferrer" href="http://localhost:3000/">
+      <a rel="noopener noreferrer" href="http://localhost:3000/my-account">
         My Account
       </a>
     ),
-    key: '0',
+    key: "0",
   },
   {
     label: (
@@ -22,7 +23,7 @@ const items: MenuProps['items'] = [
         Logout
       </a>
     ),
-    key: '1',
+    key: "1",
   },
 ];
 
@@ -36,17 +37,13 @@ export function Header() {
 
         <div>
           <button type="button">
-            <Badge count={5}>
+            <Badge count={getRandomInteger(0, 20)}>
               <FiBell />
             </Badge>
           </button>
 
           <Dropdown className={styles.dropdown} menu={{ items }}>
-            <img
-              className={styles.imagePerson}
-              src={Image}
-              alt="img"
-            />
+            <img className={styles.imagePerson} src={Image} alt="img" />
           </Dropdown>
         </div>
       </Content>

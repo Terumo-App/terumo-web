@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Container = styled.header`
   max-width: 80%;
@@ -37,16 +37,8 @@ export const PageTittle = styled.div`
 `;
 
 export const Content = styled.div`
-  position: absolute;
-  width: 1466px;
-
-  background: #ffffff;
-  border: 1px solid #f0f0f0;
-  border-radius: 10px;
-
   padding-left: 25px;
   padding-right: 25px;
-
   h2 {
     margin-top: 30px;
     margin-bottom: 30px;
@@ -54,26 +46,23 @@ export const Content = styled.div`
   }
 `;
 
-export const InfoQueryBox = styled.div`
-  margin-top: 70px;
-  margin-left: 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  margin-bottom: 15px;
+export const ButtonPrimary = styled.button`
+  width: 220px;
+  height: 40px;
+  border: 1px solid;
+  border-radius: 10px;
 
-  span {
-    color: #000;
-    font-weight: 700;
-    font-size: 18px;
+  background-color: var(--ligth-wine);
+  color: var(--white);
+
+  font-size: medium;
+  font-weight: 600;
+
+  &:hover {
+    color: var(--ligth-wine);
+    border-color: var(--ligth-wine);
+    background-color: var(--white);
   }
 
-  span + span {
-    color: var(--grey);
-    font-weight: 600;
-  }
-`;
-
-export const ImageListContent = styled.div`
-  margin-top: 50px;
+  margin-bottom: 200px;
 `;
