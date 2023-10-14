@@ -1,4 +1,4 @@
-import { LockOutlined, MailOutlined } from "@ant-design/icons";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Divider, Form, Input } from "antd";
 import "antd/dist/antd.css";
 import { useNavigate } from "react-router-dom";
@@ -9,27 +9,24 @@ import logoImg from "../../assets/logoPS.svg";
 import useAuth from "../../hooks/useAuth";
 
 
-import { Button, Modal } from 'react-bootstrap';
 
 export function LogIn() {
   const navigate = useNavigate();
 
-  const { getUserData, user, signin } = useAuth()
+  const {  signin } = useAuth()
 
   const onFinish = async (values: any) => {
-    console.log("Received values of form: ", values);
+    // console.log("Received values of form: ", values);
 
     try {
-      await signin(values.email, values.password);
-      getUserData()
-      
-      navigate("/new-query", {
+      await signin(values.username, values.password);
+       navigate("/new-query", {
         preventScrollReset: false,
       });
     } catch (error) {
-      console.error('Falha no login:', error);
-      alert('Falha no login:')
-     
+      console.error('Login failed:', error);
+      alert('Login failed')
+
     }
 
 
@@ -70,12 +67,12 @@ export function LogIn() {
         >
           <h2
             style={{
-              fontSize: 50,
+              fontSize: 36,
               color: "#fff",
               lineHeight: 1.2,
             }}
           >
-            Lorem ipsum dolor sit amet, consectetur.
+            Enhance Renal Pathology Research with PathoSpotter Semantic Search.
           </h2>
 
           <span
@@ -84,8 +81,8 @@ export function LogIn() {
               color: "#fff",
             }}
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+             PathoSpotter Semantic Search empowers renal pathologists by enabling 
+            image-based searches for glomeruli renal biopsies, streamlining research through semantic image retrieval.
           </span>
 
           <ButtonSecondary
@@ -100,10 +97,6 @@ export function LogIn() {
         </div>
       </div>
       <Content>
-        {/* {<PageTittle>
-          <h2>Welcome!</h2>
-        </PageTittle>} */}
-
         <img src={logoImg} alt="logo" height={100} />
 
         <Form
@@ -115,19 +108,19 @@ export function LogIn() {
           onFinish={onFinish}
           layout="vertical"
         >
-          <h5>Email:</h5>
+          <h5>Username:</h5>
           <Form.Item
-            name="email"
+            name="username"
             rules={[
               {
                 required: true,
-                message: "Please input your Email!",
+                message: "Please input your Username!",
               },
             ]}
           >
             <Input
-              prefix={<MailOutlined className="site-form-item-icon" />}
-              placeholder="Type your email"
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Type your username"
               className={styles.FormInput}
             />
           </Form.Item>

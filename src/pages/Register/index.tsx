@@ -12,12 +12,34 @@ import { useNavigate } from "react-router-dom";
 import { ButtonSecondary } from "../../styles/global";
 import styles from "./Styles.module.scss";
 import { ButtonPrimary, Container, Content } from "./styles";
+import useAuth from "../../hooks/useAuth";
 
 export function Register() {
   const navigate = useNavigate();
+  const { signup, signin } = useAuth()
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
     console.log("Received values of form: ", values);
+
+    try {
+      await signup(values)
+
+    } catch (error: any) {
+      console.error('Registration Failed:', error);
+      alert(`Registration Failed: ${error.response.data.detail}`)
+      throw new Error('Registration Failed');
+    }
+
+    try {
+      await signin(values.username, values.password);
+      navigate("/new-query", {
+        preventScrollReset: false,
+      });
+    } catch (error) {
+      console.error('Login failed:', error);
+      alert('Login failed')
+
+    }
   };
 
   function handleLogIn(
@@ -31,22 +53,9 @@ export function Register() {
   function handleRegister(
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ): void {
-    navigate("/", {
-      preventScrollReset: false,
-    });
+
   }
 
-  const handleGender = (value: string) => {
-    console.log(`selected ${value}`);
-  };
-
-  const handleJob = (value: string) => {
-    console.log(`selected ${value}`);
-  };
-
-  const handleJobSearch = (value: string) => {
-    console.log("search:", value);
-  };
 
   return (
     <Container>
@@ -67,12 +76,12 @@ export function Register() {
         >
           <h2
             style={{
-              fontSize: 50,
+              fontSize: 36,
               color: "#fff",
               lineHeight: 1.2,
             }}
           >
-            Lorem ipsum dolor sit amet, consectetur.
+            Enhance Renal Pathology Research with PathoSpotter Semantic Search.
           </h2>
 
           <span
@@ -81,8 +90,8 @@ export function Register() {
               color: "#fff",
             }}
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            PathoSpotter Semantic Search empowers renal pathologists by enabling
+            image-based searches for glomeruli renal biopsies, streamlining research through semantic image retrieval.
           </span>
 
           <ButtonSecondary
@@ -97,19 +106,34 @@ export function Register() {
         </div>
       </div>
       <Content>
-        {/* {<PageTittle>
-          <h2>Welcome!</h2>
-        </PageTittle>} */}
-
         <Form
           name="normal_login"
           className={styles.loginForm}
           initialValues={{
             remember: true,
           }}
+
           onFinish={onFinish}
           layout="vertical"
         >
+          <h5>Username:</h5>
+          <Form.Item
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Username!",
+              },
+            ]}
+          >
+            <Input
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Type your username"
+              className={styles.FormInput}
+            />
+          </Form.Item>
+
+          <h5>First Name:</h5>
           <Form.Item
             name="firstName"
             rules={[
@@ -119,7 +143,6 @@ export function Register() {
               },
             ]}
           >
-            <h5>First Name:</h5>
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
               placeholder="Type your first name"
@@ -127,6 +150,7 @@ export function Register() {
             />
           </Form.Item>
 
+          <h5>Last Name:</h5>
           <Form.Item
             name="lastName"
             rules={[
@@ -136,7 +160,6 @@ export function Register() {
               },
             ]}
           >
-            <h5>Last Name:</h5>
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
               placeholder="Type your last name"
@@ -144,102 +167,8 @@ export function Register() {
             />
           </Form.Item>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
-            <Form.Item>
-              <h5>Gender:</h5>
-              <Select
-                className={styles.SelectInput}
-                suffixIcon={<SkinOutlined />}
-                defaultValue="not-informed"
-                style={{ width: 120 }}
-                onChange={handleGender}
-                options={[
-                  { value: "not-informed", label: "Not informed" },
-                  { value: "male", label: "Male" },
-                  { value: "female", label: "Female" },
-                ]}
-              />
-            </Form.Item>
 
-            <Form.Item
-              name="job"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your Job!",
-                },
-              ]}
-            >
-              <h5>Job title:</h5>
-              <Select
-                className={styles.SelectInput}
-                suffixIcon={<IdcardOutlined />}
-                showSearch
-                placeholder="Select a Job"
-                optionFilterProp="children"
-                onChange={handleJob}
-                onSearch={handleJobSearch}
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={[
-                  {
-                    value: "undegraduateStudent",
-                    label: "Undegraduate Student",
-                  },
-                  {
-                    value: "graduateStudent",
-                    label: "Graduate Student",
-                  },
-                  {
-                    value: "faculty",
-                    label: "Faculty",
-                  },
-                  {
-                    value: "researcher",
-                    label: "Researcher",
-                  },
-                  {
-                    value: "professor",
-                    label: "Professor",
-                  },
-                  {
-                    value: "doctor",
-                    label: "Doctor",
-                  },
-                  {
-                    value: "other",
-                    label: "Other",
-                  },
-                ]}
-              />
-            </Form.Item>
-          </div>
-
-          <Form.Item
-            name="organization"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Organization!",
-              },
-            ]}
-          >
-            <h5>Organization:</h5>
-            <Input
-              prefix={<GlobalOutlined className="site-form-item-icon" />}
-              placeholder="Type your organization"
-              className={styles.FormInput}
-            />
-          </Form.Item>
-
+          <h5>Email:</h5>
           <Form.Item
             name="email"
             rules={[
@@ -249,7 +178,6 @@ export function Register() {
               },
             ]}
           >
-            <h5>Email:</h5>
             <Input
               prefix={<MailOutlined className="site-form-item-icon" />}
               placeholder="Type your email"
@@ -257,6 +185,8 @@ export function Register() {
             />
           </Form.Item>
 
+
+          <h5>Password:</h5>
           <Form.Item
             name="password"
             rules={[
@@ -266,7 +196,6 @@ export function Register() {
               },
             ]}
           >
-            <h5>Password:</h5>
             <Input
               prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
@@ -275,8 +204,9 @@ export function Register() {
             />
           </Form.Item>
 
+          <h5>Confirm Password:</h5>
           <Form.Item
-            name="password"
+            name="password_confirm"
             rules={[
               {
                 required: true,
@@ -284,7 +214,6 @@ export function Register() {
               },
             ]}
           >
-            <h5>Confirm Password:</h5>
             <Input
               prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
@@ -300,7 +229,7 @@ export function Register() {
           <Form.Item>
             <ButtonPrimary
               className={styles.loginFormButton}
-              onClick={handleLogIn}
+              onClick={handleRegister}
             >
               Sign Up
             </ButtonPrimary>
@@ -310,6 +239,7 @@ export function Register() {
             </Divider>
 
             <ButtonSecondary
+
               onClick={handleLogIn}
               className={styles.loginFormButton}
             >
