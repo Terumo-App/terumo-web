@@ -20,8 +20,10 @@ import { Header } from "../../components/Header";
 import { ButtonPrimary, Container, PageTittle } from "./styles";
 
 import { LockOutlined, GlobalOutlined } from "@ant-design/icons";
-import { getCollectionsQuery } from "../../services/pathoSpotter";
+import { getCollectionsQuery, queryApi } from "../../services/pathoSpotter";
 import { TweenOneGroup } from "rc-tween-one";
+import useAuth from "../../hooks/useAuth";
+
 
 const items = [
   { key: "1", label: "Edit" },
@@ -48,7 +50,10 @@ export function Collections() {
   const [tags, setTags] = useState(["default"]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [userData, SetUserData] = useState({} as any);
   const inputRef = useRef<InputRef>(null);
+  const {  getUserData } = useAuth()
+
 
   useEffect(() => {
     if (inputVisible) {
@@ -193,9 +198,41 @@ export function Collections() {
 
   const [data, setData] = useState<any>([]);
 
-  useEffect(() => {
-    getCollectionsQuery().then((data) => {
-      setData(data);
+
+  function formatDate(date: Date) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    
+    return `${month}-${day}-${year}`;
+  }
+  
+
+  useEffect(()  =>  {
+    
+    getUserData().then((res:any)=>console.log(res))
+    // SetUserData()
+    // console.log(userData)
+    getCollectionsQuery(
+      {
+        "primary_key": "142d946a-836b-48b9-8b9e-9e0b568c49ec",
+        "public_key": "d23221f6-2181-4d91-8b59-7437d46bc38b"
+      }
+    ).then((data) => {
+      const mapped = data.data.map((obj:any) => {
+        let dd = {
+          key: obj._id,
+          name: obj._name,
+          owner: `User`,
+          date: formatDate(new Date( parseInt(obj._created_at))),
+          items: `${obj._num_of_images}`,
+          type: 'Private',
+        }
+        return dd
+      })
+      console.log(mapped);
+      setData(mapped);
+
     });
   }, []);
 
@@ -277,6 +314,7 @@ export function Collections() {
 
   const handleOk = () => {
     setIsModalOpen(false);
+    
     message.success(`Collection added successfully!`);
   };
 
@@ -317,12 +355,12 @@ export function Collections() {
               onCancel={handleCancel}
             >
               <Form form={form} layout="vertical" autoComplete="off">
-                <Form.Item label="Type:">
+                {/* <Form.Item label="Type:">
                   <Radio.Group>
                     <Radio value="public"> Public </Radio>
                     <Radio value="private"> Private </Radio>
                   </Radio.Group>
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item label="Name:">
                   <Input placeholder="Type collection name" />
                 </Form.Item>

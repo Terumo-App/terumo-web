@@ -34,6 +34,11 @@ export const AuthProvider = ({ children }) => {
       return true;
   }
 
+  async function getUserData() {
+    const UserData = await User.fetchCurrent();
+    return UserData
+  }
+
   async function signup(user) {
     // console.log(user)
     const userData = {
@@ -59,7 +64,8 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         signin,
         signup,
-        signout
+        signout,
+        getUserData
       }}
     >
       {children}
