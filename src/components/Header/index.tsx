@@ -7,6 +7,7 @@ import { Drawer } from "../Drawer";
 import { Avatar, Badge, Dropdown, MenuProps } from "antd";
 import styles from "./Styles.module.scss";
 import { getRandomInteger } from "../../utils/utils";
+import useAuth from "../../hooks/useAuth";
 
 const items: MenuProps["items"] = [
   {
@@ -28,6 +29,14 @@ const items: MenuProps["items"] = [
 ];
 
 export function Header() {
+  const { signout } = useAuth()
+
+  const handleDropdownItemClick = (e: any) => {
+    if (e.key == '1')
+      signout()
+
+  };
+
   return (
     <Container>
       <Content>
@@ -42,7 +51,7 @@ export function Header() {
             </Badge>
           </button>
 
-          <Dropdown className={styles.dropdown} menu={{ items }}>
+          <Dropdown className={styles.dropdown} menu={{ onClick: handleDropdownItemClick, items }}>
             <img className={styles.imagePerson} src={Image} alt="img" />
           </Dropdown>
         </div>

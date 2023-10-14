@@ -5,14 +5,34 @@ import { useNavigate } from "react-router-dom";
 import { ButtonSecondary } from "../../styles/global";
 import styles from "./Styles.module.scss";
 import { ButtonPrimary, Container, Content } from "./styles";
-
 import logoImg from "../../assets/logoPS.svg";
+import useAuth from "../../hooks/useAuth";
+
+
+import { Button, Modal } from 'react-bootstrap';
 
 export function LogIn() {
   const navigate = useNavigate();
 
-  const onFinish = (values: any) => {
+  const { getUserData, user, signin } = useAuth()
+
+  const onFinish = async (values: any) => {
     console.log("Received values of form: ", values);
+
+    try {
+      await signin(values.email, values.password);
+      getUserData()
+      
+      navigate("/new-query", {
+        preventScrollReset: false,
+      });
+    } catch (error) {
+      console.error('Falha no login:', error);
+      alert('Falha no login:')
+     
+    }
+
+
   };
 
   function handleLogIn(
