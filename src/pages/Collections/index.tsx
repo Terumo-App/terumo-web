@@ -20,7 +20,7 @@ import { Header } from "../../components/Header";
 import { ButtonPrimary, Container, PageTittle } from "./styles";
 
 import { LockOutlined, GlobalOutlined } from "@ant-design/icons";
-import { getCollectionsQuery, queryApi } from "../../services/pathoSpotter";
+import { getCollectionsQuery, addNewCollection } from "../../services/pathoSpotter";
 import { TweenOneGroup } from "rc-tween-one";
 import useAuth from "../../hooks/useAuth";
 
@@ -52,7 +52,7 @@ export function Collections() {
   const [inputValue, setInputValue] = useState("");
   const [userData, SetUserData] = useState({} as any);
   const inputRef = useRef<InputRef>(null);
-  const {  getUserData } = useAuth()
+  const { getUserData } = useAuth()
 
 
   useEffect(() => {
@@ -67,21 +67,23 @@ export function Collections() {
     setTags(newTags);
   };
 
-  const showInput = () => {
-    setInputVisible(true);
-  };
+  // const showInput = () => {
+  //   setInputVisible(true);
+  // };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setInputValue(e.target.value);
+  // };
 
-  const handleInputConfirm = () => {
-    if (inputValue && tags.indexOf(inputValue) === -1) {
-      setTags([...tags, inputValue]);
-    }
-    setInputVisible(false);
-    setInputValue("");
-  };
+  // const handleInputConfirm = () => {
+  //   if (inputValue && tags.indexOf(inputValue) === -1) {
+  //     setTags([...tags, inputValue]);
+  //   }
+  //   setInputVisible(false);
+  //   setInputValue("");
+  //   console.log("enviar request para add aqui")
+
+  // };
 
   const forMap = (tag: string) => {
     const tagElem = (
@@ -197,43 +199,52 @@ export function Collections() {
   ];
 
   const [data, setData] = useState<any>([]);
+  const [privateKey, setPrivateKey] = useState<string>("");
+  const [puplicKey, setPuplicKey] = useState<string>("");
 
 
   function formatDate(date: Date) {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
-    
+
     return `${month}-${day}-${year}`;
   }
-  
 
-  useEffect(()  =>  {
-    
-    getUserData().then((res:any)=>console.log(res))
-    // SetUserData()
-    // console.log(userData)
-    getCollectionsQuery(
-      {
-        "primary_key": "142d946a-836b-48b9-8b9e-9e0b568c49ec",
-        "public_key": "d23221f6-2181-4d91-8b59-7437d46bc38b"
-      }
-    ).then((data) => {
-      const mapped = data.data.map((obj:any) => {
-        let dd = {
-          key: obj._id,
-          name: obj._name,
-          owner: `User`,
-          date: formatDate(new Date( parseInt(obj._created_at))),
-          items: `${obj._num_of_images}`,
-          type: 'Private',
+  function appSetup() {
+    getUserData().then((res: any) => {
+      // console.log(res.privateKey, res.publicKey)
+      setPrivateKey(res.privateKey);
+      setPuplicKey(res.publicKey);
+
+      getCollectionsQuery(
+        {
+          "private_key": res.privateKey,
+          "public_key": res.publicKey
         }
-        return dd
-      })
-      console.log(mapped);
-      setData(mapped);
+      ).then((data) => {
+        const mapped = data.data.map((obj: any) => {
+          let dd = {
+            key: obj._id,
+            name: obj._name,
+            owner: obj._owner,
+            date: formatDate(new Date(parseInt(obj._created_at))),
+            items: `${obj._num_of_images}`,
+            type: obj._type,
+          }
+          return dd
+        })
+        console.log(mapped);
+        setData(mapped);
 
+
+      });
     });
+  }
+
+  useEffect(() => {
+    appSetup()
+
   }, []);
 
   const metadatas = [
@@ -314,8 +325,21 @@ export function Collections() {
 
   const handleOk = () => {
     setIsModalOpen(false);
-    
-    message.success(`Collection added successfully!`);
+
+
+    addNewCollection(
+      {
+        "private_key": privateKey,
+        "public_key": puplicKey,
+        "collection_name": form.getFieldInstance('name').input.value
+      }
+    ).then(el => {
+      appSetup()
+      message.success(`Collection added successfully!`);
+      form.resetFields(['name'])
+      
+    }).catch(err => message.error(`Error adding Collection!`));
+
   };
 
   const handleCancel = () => {
@@ -361,10 +385,10 @@ export function Collections() {
                     <Radio value="private"> Private </Radio>
                   </Radio.Group>
                 </Form.Item> */}
-                <Form.Item label="Name:">
+                <Form.Item name="name" label="Name:">
                   <Input placeholder="Type collection name" />
                 </Form.Item>
-                <Form.Item label="Metadatas:">
+                {/* <Form.Item label="Metadatas:">
                   <>
                     <div style={{ marginBottom: 16 }}>
                       <TweenOneGroup
@@ -407,7 +431,7 @@ export function Collections() {
                       </Tag>
                     )}
                   </>
-                </Form.Item>
+                </Form.Item> */}
               </Form>
             </Modal>
           </div>

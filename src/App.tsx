@@ -16,8 +16,9 @@ import { AuthProvider } from "./contexts/auth";
 import useAuth from "./hooks/useAuth";
 
 const Private = ({ Item }: any) => {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated() ? <Item /> : <LogIn />;
+  const isAuth = sessionStorage.getItem('authenticated') === 'true';
+
+  return  isAuth? <Item /> : <LogIn />;
 };
 
 export function App() {

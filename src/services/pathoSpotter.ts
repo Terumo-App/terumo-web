@@ -15,17 +15,17 @@ function formatDate(date: Date) {
 }
 
 
-export async function queryApi() {
-  const res = await axios.post(`http://localhost:8000/v1/collection`,
-    {
-      "primary_key": "142d946a-836b-48b9-8b9e-9e0b568c49ec",
-      "public_key": "d23221f6-2181-4d91-8b59-7437d46bc38b"
-    }
-  );
+export async function addNewCollection(payload:any) {
+  
+    const collections = await pathoSpotterApi.post('/collection/create', payload, {
+      params: {
+        private: false,
+      },
+    });
 
-  return res
+    return collections.data;
+
 }
-
 
 export async function getCollectionsAvailableForQuery() {
   try {
