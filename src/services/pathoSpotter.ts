@@ -15,15 +15,15 @@ function formatDate(date: Date) {
 }
 
 
-export async function addNewCollection(payload:any) {
-  
-    const collections = await pathoSpotterApi.post('/collection/create', payload, {
-      params: {
-        private: false,
-      },
-    });
+export async function addNewCollection(payload: any) {
 
-    return collections.data;
+  const collections = await pathoSpotterApi.post('/collection/create', payload, {
+    params: {
+      private: false,
+    },
+  });
+
+  return collections.data;
 
 }
 
@@ -53,4 +53,16 @@ export async function getCollectionsQuery(data: any) {
   } catch (error: any) {
     return mockCollectionsResult();
   }
+}
+
+export async function getImageList(payload: any, pageNumber: number) {
+
+  const collections = await pathoSpotterApi.post(`/image/?page=${pageNumber}&size=9`, payload, {
+    params: {
+      private: false,
+    },
+  });
+
+  return collections.data;
+
 }

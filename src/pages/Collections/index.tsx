@@ -29,6 +29,7 @@ const items = [
   { key: "1", label: "Edit" },
   { key: "2", label: "Remove" },
   { key: "3", label: "Share" },
+  { key: "4", label: "Trigger Indexing" },
 ];
 
 /**  { key: '1', label: 'Upload Images' },

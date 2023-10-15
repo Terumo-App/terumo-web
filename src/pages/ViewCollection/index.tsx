@@ -27,6 +27,8 @@ import { useParams } from "react-router-dom";
 import { TweenOneGroup } from "rc-tween-one";
 import Dragger from "antd/lib/upload/Dragger";
 import { InboxOutlined, FileImageOutlined } from "@ant-design/icons";
+import { getImageList } from "../../services/pathoSpotter";
+import useAuth from "../../hooks/useAuth";
 
 const props: UploadProps = {
   name: "file",
@@ -62,9 +64,28 @@ export function ViewCollection() {
   const [tags, setTags] = useState(["default"]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [numberOfImages, setNumberOfImages] = useState("");
   const inputRef = useRef<InputRef>(null);
+  const { getUserData } = useAuth()
+  const params = useParams();
+
+  function appSetup() {
+    getUserData().then((res: any) => {
+      getImageList(
+        {
+          "private_key": res.privateKey,
+          "public_key": res.publicKey,
+          "collection_id": params.key
+        },
+        1
+      ).then((data: any) => setNumberOfImages(data.total))
+    })
+  }
+
+
 
   useEffect(() => {
+    appSetup()
     if (inputVisible) {
       inputRef.current?.focus();
     }
@@ -120,7 +141,7 @@ export function ViewCollection() {
   // =============================================
   const { createNewQuery } = useContext(NewQueryContext);
 
-  const params = useParams();
+
   console.log(params);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -153,7 +174,7 @@ export function ViewCollection() {
           <InfoQueryBox>
             <div>
               <span>Total de imagens: </span>
-              <span>{getRandomInteger(20, 49)}</span>
+              <span>{numberOfImages}</span>
             </div>
           </InfoQueryBox>
 
