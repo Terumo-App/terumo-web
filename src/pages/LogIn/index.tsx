@@ -1,5 +1,5 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Divider, Form, Input } from "antd";
+import { Divider, Form, Input, message } from "antd";
 import "antd/dist/antd.css";
 import { useNavigate } from "react-router-dom";
 import { ButtonSecondary } from "../../styles/global";
@@ -25,7 +25,8 @@ export function LogIn() {
       });
     } catch (error) {
       console.error('Login failed:', error);
-      alert('Login failed')
+      // alert('Login failed')
+      message.error(`'Login failed'.`);
 
     }
 

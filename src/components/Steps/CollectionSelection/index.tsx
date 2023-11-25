@@ -8,6 +8,9 @@ import { LockOutlined, GlobalOutlined, CheckOutlined } from "@ant-design/icons";
 import { Content } from "../styles";
 import { NewQueryContext } from "../../../hooks/NewQueryContext";
 
+import { fetchAvailableCollections,  } from "../../../services/pathoSpotter";
+import useAuth from "../../../hooks/useAuth";
+
 interface TableTransferProps extends TransferProps<DataType> {
   dataSource: DataType[];
   leftColumns: any;
@@ -17,6 +20,7 @@ interface TableTransferProps extends TransferProps<DataType> {
 }
 
 interface RecordType {
+  // id: string;
   key: string;
   date: string;
   type: React.ReactElement | string;
@@ -34,16 +38,26 @@ interface DataType extends TransferItem {
   owner: string;
 }
 
+interface CollectionResponse {
+  _id: number;
+  _created_at: string;
+  _name: string;
+  _num_of_images: number;
+  _owner: string;
+  _type:string;
+}
+
+
 const tags = ["Public", "Private"];
 
-const mockData: RecordType[] = Array.from({ length: 20 }).map((_, i) => ({
-  key: i.toString(),
-  name: `Collection ${i + 1}`,
-  owner: `Proprietário ${i + 1}`,
-  date: "12-27-2023",
-  items: `${i + i * i}`,
-  type: tags[i % 2],
-}));
+// const mockData: RecordType[] = Array.from({ length: 20 }).map((_, i) => ({
+//   key: i.toString(),
+//   name: `Collection ${i + 1}`,
+//   owner: `Proprietário ${i + 1}`,
+//   date: "12-27-2023",
+//   items: `${i + i * i}`,
+//   type: tags[i % 2],
+// }));
 
 const leftTableColumns: ColumnsType<DataType> = [
   {
@@ -200,18 +214,69 @@ export function CollectionSelectionStep() {
       return item.key as string;
     });
   };
-
+  const { getUserData } = useAuth()
   const [targetKeys, setTargetKeys] = useState<string[]>(selectedtargetKeys);
   const [selectedTags, setSelectedTags] = useState<string[]>(tags);
-  const [data, setData] = useState<RecordType[]>(mockData);
+  const [data, setData] = useState<RecordType[]>([]);
+  const [privateKey, setPrivateKey] = useState<string>("");
+  const [puplicKey, setPuplicKey] = useState<string>("");
+
+  function formatDate(date: Date) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+
+    return `${month}-${day}-${year}`;
+  }
+
+  function appSetup() {
+    getUserData().then((res: any) => {
+      // console.log(res.privateKey, res.publicKey)
+      setPrivateKey(res.privateKey);
+      setPuplicKey(res.publicKey);
+
+      fetchAvailableCollections(
+        {
+          "private_key": res.privateKey,
+          "public_key": res.publicKey
+        }
+      ).then((data) => {
+        const mapped = data.data.map((obj:CollectionResponse, i: number) => {
+          let dd = {
+            key: `${i}`,
+            id: `${obj._id}`,
+            name: obj._name,
+            owner: obj._owner,
+            date: formatDate(new Date(parseInt(obj._created_at))),
+            items: `${obj._num_of_images}`,
+            type: obj._type,
+          }
+          return dd
+        });
+
+
+        console.log(mapped)
+        setData(mapped);
+      });
+    });
+  }
+
+
+  useEffect(() => { 
+    appSetup();
+  }, []);
+
+
+
 
   const onChange = (nextTargetKeys: string[]) => {
     setTargetKeys(nextTargetKeys);
     console.log(nextTargetKeys);
+    console.log(data);
     const selectedCollections = nextTargetKeys.map((item) => {
       return data[Number(item)];
     });
-
+    console.log(selectedCollections)
     setCollection(selectedCollections);
   };
 
@@ -227,7 +292,7 @@ export function CollectionSelectionStep() {
     setSelectedTags(nextSelectedTags);
 
     setData(
-      mockData.filter((item) => nextSelectedTags.includes(item.type as string))
+      data.filter((item) => nextSelectedTags.includes(item.type as string))
     );
   };
 

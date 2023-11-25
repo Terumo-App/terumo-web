@@ -1,9 +1,9 @@
 import { ReactNode, createContext, useState } from "react";
 
 interface NewQueryData {
-  collections?: Array<any>;
+  collections?: Array<CollectionType>;
   imageType?: string;
-  image?: ImageObject;
+  image?: {id:string};
   attributes?: Array<any>;
 }
 
@@ -11,6 +11,16 @@ interface ImageObject {
   thumbUrl?: string | ArrayBuffer;
   type?: string;
   name?: string;
+}
+
+interface CollectionType {
+  key: string;
+  id?: string;
+  date: string;
+  type: React.ReactElement | string;
+  name: string;
+  items: number | string;
+  owner: string;
 }
 
 interface NewQueryProviderProps {
@@ -60,15 +70,15 @@ export function NewQueryProvider({ children }: NewQueryProviderProps) {
     if (!newQueryData.image && step === 0) {
       return false;
     }
-    if (!newQueryData.imageType && step === 1) {
+    // if (!newQueryData.imageType && step === 1) {
+    //   return false;
+    // }
+    if (!newQueryData.collections?.length && step === 1) {
       return false;
     }
-    if (!newQueryData.collections?.length && step === 2) {
-      return false;
-    }
-    if (!newQueryData.attributes?.length && step === 3) {
-      return false;
-    }
+    // if (!newQueryData.attributes?.length && step === 3) {
+    //   return false;
+    // }
 
     return true;
   }

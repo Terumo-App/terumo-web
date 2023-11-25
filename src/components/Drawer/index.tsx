@@ -43,18 +43,18 @@ export function Drawer() {
               <FiDatabase />
               <a href="/collections">Collections</a>
             </li>
-            <li>
+            {/* <li>
               <FiImage />
               <a href="/gallery">Gallery</a>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <FiHardDrive />
               <a href="/saved-queries">Saved queries</a>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <FiSettings />
               <a href="/settings">Settings</a>
-            </li>
+            </li> */}
             <li>
               <FiHelpCircle />
               <a href="/help">Help</a>

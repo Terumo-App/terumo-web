@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DownOutlined } from "@ant-design/icons";
 import {
+  Button,
   Dropdown,
   Form,
   Input,
   InputRef,
+  MenuProps,
   Modal,
   Radio,
   message,
@@ -20,17 +22,18 @@ import { Header } from "../../components/Header";
 import { ButtonPrimary, Container, PageTittle } from "./styles";
 
 import { LockOutlined, GlobalOutlined } from "@ant-design/icons";
-import { getCollectionsQuery, addNewCollection } from "../../services/pathoSpotter";
+import { getCollectionsQuery, addNewCollection, performCollectionIdexing } from "../../services/pathoSpotter";
 import { TweenOneGroup } from "rc-tween-one";
 import useAuth from "../../hooks/useAuth";
 
 
-const items = [
+const items: MenuProps['items'] = [
   { key: "1", label: "Edit" },
   { key: "2", label: "Remove" },
   { key: "3", label: "Share" },
-  { key: "4", label: "Trigger Indexing" },
+  // { key: "4", label: "Trigger Indexing" },
 ];
+
 
 /**  { key: '1', label: 'Upload Images' },
   { key: '2', label: 'Share' },
@@ -42,7 +45,7 @@ export interface DataType {
   date: string;
   type: React.ReactElement | string;
   name: string;
-  items: number | string;
+  items: number | string | any;
   owner: string;
 }
 
@@ -64,8 +67,28 @@ export function Collections() {
 
   const handleClose = (removedTag: string) => {
     const newTags = tags.filter((tag) => tag !== removedTag);
-    console.log(newTags);
+    // console.log(newTags);
     setTags(newTags);
+  };
+
+  const onTriggerClick =  (data: any) => {
+    console.log(data)
+    if(data){
+      // message.info(`Click on item ${key}`);
+      // https://ant.design/components/dropdown use this for indexic botum
+  
+      performCollectionIdexing(
+        {
+          "private_key": privateKey,
+          "public_key": puplicKey,
+          "collection_id": data.key
+        }
+      ).then(el => {
+        message.info(`Collection ${data.key} started to be indexed`);
+
+        
+      }).catch(err => message.error(`Error when triggering collection ${data.key} indexing`));
+    }
   };
 
   // const showInput = () => {
@@ -158,22 +181,73 @@ export function Collections() {
     },
     {
       dataIndex: "action",
-      title: "Action",
+      title: "Page",
       render: (key, data) => (
-        <Space
-          size="middle"
-          style={{ display: "flex", gap: 20, alignItems: "center" }}
-        >
+        // <Space
+        //   size="middle"
+        //   style={{ display: "flex", gap: 20, alignItems: "center" }}
+        // >
+        <>
           <a
             href={`http://localhost:3000/collections/${data.key}`}
             style={{
               color: "#702331",
             }}
           >
-            View
+            {/* View */}
+            <Button>View</Button>
           </a>
-          <Dropdown menu={{ items }}>
-            <a
+          {/* <Dropdown menu={{ 
+            items, 
+            onClick: ({ key }) => {onTriggerClick(key, data)}  
+            }}> 
+            <a onClick={(e) => e.preventDefault()}
+              style={{
+                color: "#702331",
+              }}
+            >
+              More <DownOutlined />
+            </a>
+          </Dropdown>
+
+          <div
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              display: "flex",
+            }}
+          >
+            <FiBookmark
+              fill={Number(data.key) < 6 ? "#702331" : "#FFF"}
+              style={{ width: 20, height: 20, color: "#702331" }}
+            />
+          </div>*/}
+        {/* </Space>  */}
+        </>
+      ),
+    },
+    {
+      dataIndex: "index",
+      title: "Index Action",
+      render: (key, data) => (
+        <Space
+          size="middle"
+          style={{ display: "flex", gap: 20, alignItems: "center" }}
+        >
+          {/* <a
+            href={`http://localhost:3000/collections/${data.key}`}
+            style={{
+              color: "#702331",
+            }}
+          > */}
+            {/* View */}
+            <Button onClick={() => {onTriggerClick( data)}}>Trigger</Button>
+          {/* </a> */}
+          <Dropdown menu={{ 
+            items, 
+            // onClick: ({ key }) => {onTriggerClick(key, data)}  
+            }}> 
+            <a onClick={(e) => e.preventDefault()}
               style={{
                 color: "#702331",
               }}

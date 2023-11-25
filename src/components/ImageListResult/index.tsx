@@ -18,13 +18,19 @@ import { getRandomInteger } from "../../utils/utils";
 import styles from "./Styles.module.scss";
 import { FiBookmark, FiInfo, FiMoreVertical } from "react-icons/fi";
 
+import useAuth from "../../hooks/useAuth";
+import { searchSimilarImages } from "../../services/pathoSpotter";
+import { useLocation } from "react-router-dom";
+
 interface DataType {
+  id:number;
   image_url: string;
   picture: {
     large?: string;
     medium?: string;
     thumbnail?: string;
   };
+  name:{last:string;}
   nat?: string;
   loading: boolean;
   score: number | string;
@@ -58,20 +64,21 @@ export function ImageListResult() {
     },
   ];
   // ============ Modal Info ======================
-  const showMoreInfoModal = () => {
+  const showMoreInfoModal = (item:DataType) => {
+    console.log(item)
     Modal.info({
       title: "Image explainability content",
       content: (
         <div>
-          <p>CONTENT</p>
-          <p>CONTENT</p>
+          <p>Image Id {item.id}</p>
+          <p>Image Name {item.name.last}</p>
           <p>CONTENT</p>
           <p>CONTENT</p>
           <p>CONTENT</p>
           <p>CONTENT</p>
         </div>
       ),
-      onOk() {},
+      onOk() { },
       style: { width: 800, height: 800 },
       width: 900,
     });
@@ -83,6 +90,14 @@ export function ImageListResult() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<DataType[]>([]);
   const [list, setList] = useState<DataType[]>([]);
+  const { getUserData } = useAuth()
+  const [privateKey, setPrivateKey] = useState<string>("");
+  const [puplicKey, setPuplicKey] = useState<string>("");
+  const [imageId, setImageId] = useState<string | null>("");
+  const [collectionId, setCollectionId] = useState<string | null>("");
+  const [nextPage, setNextPage] = useState<number>(1);
+  const [lastPage, setLastPage] = useState<number>(1);
+  const location = useLocation();
 
   const imageList = [
     "https://st4.depositphotos.com/22518918/31524/i/450/depositphotos_315248498-stock-photo-microscopic-photograph-of-a-glomerulus.jpg",
@@ -116,87 +131,89 @@ export function ImageListResult() {
     "https://media.istockphoto.com/id/937463412/pt/foto/renal-corpuscles-filtering-the-blood-in-the-kidney.jpg?s=612x612&w=0&k=20&c=OyK9CN-QmqcYKgMAnFm1BitrXknhuhFcpBGD4ahhxw4=",
   ];
 
-  // const body:BodyData = {
-  //   image_base64: "a",
-  //   semantic_attributes: [
-  //     {
-  //       id: "normal",
-  //       name: "Normal"
-  //     },
-  //     {
-  //       id: "hypercellularity",
-  //       name: "Hypercellularity"
-  //     },
-  //     {
-  //       id: "podocytopathy",
-  //       name: "Podocytopathy"
-  //     },
-  //     {
-  //       id: "membranous",
-  //       name: "Membranous"
-  //     },
-  //     {
-  //       id: "crescent",
-  //       name: "Crescent"
-  //     },
-  //     {
-  //       id: "sclerosis",
-  //       name: "Sclerosis"
-  //     }
-  //   ]
-  // }
+
+  function appSetup() {
+    getUserData().then((res: any) => {
+      setPrivateKey(res.privateKey);
+      setPuplicKey(res.publicKey);
+      const searchParams = new URLSearchParams(location.search);
+      const image_id = searchParams.get('image');
+      const collection_id = searchParams.get('collection');
+      setImageId(image_id);
+      setCollectionId(collection_id);
+      searchSimilarImages(
+        {
+          "private_key": res.privateKey,
+          "public_key": res.publicKey,
+          "image_id": image_id,
+          "collection_id": collection_id
+        },
+        nextPage
+      ).then((data: any) => {
+        setInitLoading(false);
+        // console.log(data)
+        setNextPage(data.page + 1)
+        setLastPage(data.pages)
+        setData(data.items)
+        setList(data.items)
+
+      })
+    });
+  }
 
   useEffect(() => {
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
-      .then((res) => {
-        setInitLoading(false);
+    // fetch(fakeDataUrl)
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     setInitLoading(false);
 
-        console.log(res.results);
-        const newData = data.concat(res.results);
-        const aux = newData.map((item, index) => {
-          return {
-            ...item,
-            picture: {
-              thumbnail: imageList[index],
-            },
-            score: `0.${getRandomInteger(9000, 9999)}`,
-          };
-        });
+    //     console.log(res.results);
+    //     const newData = data.concat(res.results);
+    //     const aux = newData.map((item, index) => {
+    //       return {
+    //         ...item,
+    //         picture: {
+    //           thumbnail: imageList[index],
+    //         },
+    //         score: `0.${getRandomInteger(9000, 9999)}`,
+    //       };
+    //     });
 
-        setData(aux.sort((a, b) => Number(a.score) - Number(b.score)));
-        setList(aux.sort((a, b) => Number(a.score) - Number(b.score)));
-      });
+    //     setData(aux.sort((a, b) => Number(a.score) - Number(b.score)));
+    //     setList(aux.sort((a, b) => Number(a.score) - Number(b.score)));
+    //   });
+
+    appSetup()
   }, []);
 
   const onLoadMore = () => {
     setLoading(true);
     setList(data);
-    console.log(data);
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
-      .then((res) => {
-        const newData = data.concat(...res.results);
 
-        const aux = newData.map((item, index) => {
-          return {
-            ...item,
-            picture: {
-              thumbnail: imageList[index],
-            },
-            score: `0.${getRandomInteger(9000, 9999)}`,
-          };
-        });
-        setData(aux);
-        setList(aux);
-        setLoading(false);
+    searchSimilarImages(
+      {
+        "private_key": privateKey,
+        "public_key": puplicKey,
+        "image_id": imageId,
+        "collection_id": collectionId
+      },
+      nextPage
+    ).then((res: { items: any; page: number; }) => {
+      // console.log(res)
+      const newData = data.concat(...res.items);
 
-        window.dispatchEvent(new Event("resize"));
-      });
+      setNextPage(res.page + 1)
+      setData(newData);
+      setList(newData);
+      setLoading(false);
+
+
+      window.dispatchEvent(new Event("resize"));
+    });
   };
 
   const loadMore =
-    !initLoading && !loading ? (
+    !initLoading && !loading && (nextPage <= lastPage) ? (
       <div
         style={{
           display: "flex",
@@ -291,7 +308,7 @@ export function ImageListResult() {
               <button
                 type="button"
                 className={styles.button}
-                onClick={showMoreInfoModal}
+                onClick={showMoreInfoModal.bind(null, item)}
               >
                 <span className={styles.button__text}>More info</span>
                 <span className={styles.button__icon}>

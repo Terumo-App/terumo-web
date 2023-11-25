@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "../../styles/styles.module.scss";
 
 export function NewQuery() {
-  const { createNewQuery, validateForm } = useContext(NewQueryContext);
+  const { newQueryData, validateForm } = useContext(NewQueryContext);
 
   const navigate = useNavigate();
 
@@ -30,11 +30,16 @@ export function NewQuery() {
   };
 
   const redirectResult = async () => {
-    await sleep(2500);
+    await sleep(500);
 
-    navigate("query-result", {
-      preventScrollReset: false,
+    const newParams = new URLSearchParams();
+    newParams.append('image', (newQueryData.image?.id as string));
+    newParams.append('collection', (newQueryData.collections?.[0]?.id) || '');
+    navigate(`query-result?${newParams.toString()}`, {
+      preventScrollReset: false
     });
+    // console.log(newQueryData)
+    // console.log(newQueryData.collections?.[0]?.id)
 
     return null;
   };
@@ -44,19 +49,19 @@ export function NewQuery() {
       title: "",
       content: <ImageUploadStep />,
     },
-    {
-      title: "",
-      content: <QueryImageTypeStep />,
-    },
+    // {
+    //   title: "",
+    //   content: <QueryImageTypeStep />,
+    // },
     {
       title: "",
        // content: <Content><h2>Collection selection</h2> <CollectionsSelect /> </Content> ,
       content: <CollectionSelectionStep />,
     },
-    {
-      title: "",
-      content: <SemanticAttributeStep />,
-    },
+    // {
+    //   title: "",
+    //   content: <SemanticAttributeStep />,
+    // },
     {
       title: "",
       content: <LoadingSearchStep message="Loading..." />,
@@ -126,7 +131,7 @@ export function NewQuery() {
                   return;
                 }
                 next();
-                createNewQuery();
+                // createNewQuery();
                 redirectResult();
               }}
             >

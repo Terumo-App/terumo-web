@@ -66,3 +66,39 @@ export async function getImageList(payload: any, pageNumber: number) {
   return collections.data;
 
 }
+export async function searchSimilarImages(payload: any, pageNumber: number) {
+
+  const collections = await pathoSpotterApi.post(`/image-query/search/?page=${pageNumber}&size=9`, payload, {
+    params: {
+      private: false,
+    },
+  });
+
+  return collections.data;
+
+}
+
+export async function performCollectionIdexing(payload: any) {
+
+  const collections = await pathoSpotterApi.get(`/index/collection-index/${payload.collection_id}`, {
+    params: {
+      private: false,
+    },
+  });
+
+  return collections.data;
+
+}
+
+
+export async function fetchAvailableCollections(payload: any) {
+
+  const collections = await pathoSpotterApi.post(`/image-query/collections/`, payload,{
+    params: {
+      private: false,
+    },
+  });
+
+  return collections.data;
+
+}

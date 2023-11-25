@@ -10,6 +10,7 @@ import { NewQueryContext } from '../../../hooks/NewQueryContext';
 import { useContext, useState } from 'react';
 import { Input } from 'antd';
 import { getFileFromURL } from '../../../utils/utils';
+import axios from 'axios';
 
 const { Search } = Input;
 
@@ -21,8 +22,16 @@ export function ImageUploadStep() {
     console.log(value);
 
     const imgFile = await getFileFromURL(value);
+    const formData = new FormData();
+    formData.append('file', imgFile.file);
+    const response = await axios.post('http://localhost:8000/v1/image-query/upload-query-image/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    // console.log(response.data.image_id)
+    setImageFile({id:response.data.image_id});
 
-    setImageFile(imgFile.file);
     setFile(value);
 
     // "https://fastly.picsum.photos/id/596/300/300.jpg?hmac=XyxyP0y5jQ2T0pgdg5EeUGKoxn5Y4rlNPj4lwbsvjPg"
@@ -35,14 +44,16 @@ export function ImageUploadStep() {
     disabled: Boolean(file),
     name: 'file',
     multiple: false,
-    action: 'https://httpstat.us/200',
+    action: 'http://localhost:8000/v1/image-query/upload-query-image/',
     accept: '.png, .jpeg',
     listType: 'picture',
     showUploadList: { showPreviewIcon: true },
     progress: {},
     async onChange(info) {
       const { status } = info.file;
-      setImageFile(info.file);
+      const { response } = info.file;
+      setImageFile({id:response.image_id});
+
       // console.log(getBase64(info.file.originFileObj as File)); // prints the base64 string
 
       /*if (status !== 'uploading') {
