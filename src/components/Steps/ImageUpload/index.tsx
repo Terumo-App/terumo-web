@@ -24,7 +24,7 @@ export function ImageUploadStep() {
     const imgFile = await getFileFromURL(value);
     const formData = new FormData();
     formData.append('file', imgFile.file);
-    const response = await axios.post('http://localhost:8000/v1/image-query/upload-query-image/', formData, {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/image-query/upload-query-image/`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -44,7 +44,7 @@ export function ImageUploadStep() {
     disabled: Boolean(file),
     name: 'file',
     multiple: false,
-    action: 'http://localhost:8000/v1/image-query/upload-query-image/',
+    action: `${process.env.REACT_APP_API_URL}/image-query/upload-query-image/`,
     accept: '.png, .jpeg',
     listType: 'picture',
     showUploadList: { showPreviewIcon: true },
