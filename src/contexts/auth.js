@@ -9,6 +9,7 @@ import axios from 'axios';
 // const CYTOMINE_URL = "http://maods.homelab.core/"
 // const TERUMO_CORE_URL = "http://localhost:8000/"
 const CYTOMINE_URL = process.env.REACT_APP_CYTOMINE_URL
+console.log(CYTOMINE_URL)
 const cytomine = new Cytomine(CYTOMINE_URL);
 
 

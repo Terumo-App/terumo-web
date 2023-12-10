@@ -47,7 +47,7 @@ export function ImageListResult() {
       label: (
         <a
           rel="noopener noreferrer"
-          href={`http://localhost:3000/${urlImageCurrent}`}
+          href={`${process.env.REACT_APP_WEB_URL}/${urlImageCurrent}`}
         >
           New query
         </a>
@@ -56,7 +56,7 @@ export function ImageListResult() {
     },
     {
       label: (
-        <a rel="noopener noreferrer" href="http://localhost:3000/login">
+        <a rel="noopener noreferrer" href={`${process.env.REACT_APP_WEB_URL}/login`}>
           Download
         </a>
       ),

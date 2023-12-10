@@ -12,7 +12,7 @@ import useAuth from "../../hooks/useAuth";
 const items: MenuProps["items"] = [
   {
     label: (
-      <a rel="noopener noreferrer" href="http://localhost:3000/my-account">
+      <a rel="noopener noreferrer" href={`${process.env.REACT_APP_WEB_URL}/my-account`}>
         My Account
       </a>
     ),
@@ -20,7 +20,7 @@ const items: MenuProps["items"] = [
   },
   {
     label: (
-      <a rel="noopener noreferrer" href="http://localhost:3000/login">
+      <a rel="noopener noreferrer" href={`${process.env.REACT_APP_WEB_URL}/login`}>
         Logout
       </a>
     ),

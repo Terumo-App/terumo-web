@@ -189,7 +189,7 @@ export function Collections() {
         // >
         <>
           <a
-            href={`http://localhost:3000/collections/${data.key}`}
+            href={`${process.env.REACT_APP_WEB_URL}/collections/${data.key}`}
             style={{
               color: "#702331",
             }}
@@ -235,7 +235,7 @@ export function Collections() {
           style={{ display: "flex", gap: 20, alignItems: "center" }}
         >
           {/* <a
-            href={`http://localhost:3000/collections/${data.key}`}
+            href={`${process.env.REACT_APP_WEB_URL}/collections/${data.key}`}
             style={{
               color: "#702331",
             }}
