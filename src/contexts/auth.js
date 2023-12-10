@@ -2,12 +2,13 @@
 
 import { createContext, useState } from "react";
 import { Cytomine, User } from "cytomine-client";
-
+import { register } from "../services/pathoSpotter";
 import axios from 'axios';
 
 
-const CYTOMINE_URL = "http://maods.homelab.core/"
-const TERUMO_CORE_URL = "http://localhost:8000/"
+// const CYTOMINE_URL = "http://maods.homelab.core/"
+// const TERUMO_CORE_URL = "http://localhost:8000/"
+const CYTOMINE_URL = process.env.REACT_APP_CYTOMINE_URL
 const cytomine = new Cytomine(CYTOMINE_URL);
 
 
@@ -48,7 +49,7 @@ export const AuthProvider = ({ children }) => {
       last_name: user.lastName,
       email: user.email
     };
-    const response = await axios.post(`${TERUMO_CORE_URL}v1/auth/signup`, userData);
+    const response = await register(userData)
     return response
   };
 

@@ -6,6 +6,17 @@ import {
 import axios from "axios";
 
 
+
+export async function register(payload: any) {
+  console.log(process.env.REACT_APP_API_URL)
+  const response = await pathoSpotterApi.post('/auth/signup', payload, {
+    params: {
+      private: false,
+    },
+  });
+  return response;
+}
+
 function formatDate(date: Date) {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
