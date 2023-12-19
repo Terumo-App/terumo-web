@@ -91,15 +91,18 @@ export function mockCollectionsImagens() {
 
 export function mockImageMetadatas() {
   return [
-    "Forrado",
-    "Marionete",
-    "Cirurgião",
-    "Nota",
-    "Granada",
-    "Ecoado",
-    "Bigode",
-    "Adolescente",
-    "Partido",
-    "Dinamite",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+
   ];
 }

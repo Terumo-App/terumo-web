@@ -287,7 +287,7 @@ export function ImageListCollection() {
                     marginTop: -5,
                   }}
                 ></Divider>
-                <h4>Metadatas:</h4>
+                <h4>Metadata:</h4>
                 <Tag>{mockImageMetadatas()[0]}</Tag>
                 <Tag>{mockImageMetadatas()[1]}</Tag>
                 <Tag>{mockImageMetadatas()[2]}</Tag>

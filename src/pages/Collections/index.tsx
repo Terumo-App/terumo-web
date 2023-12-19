@@ -228,7 +228,7 @@ export function Collections() {
     },
     {
       dataIndex: "index",
-      title: "Index Action",
+      title: "Collection Attributes",
       render: (key, data) => (
         <Space
           size="middle"
@@ -241,7 +241,7 @@ export function Collections() {
             }}
           > */}
             {/* View */}
-            <Button onClick={() => {onTriggerClick( data)}}>Trigger</Button>
+            <Button onClick={() => {onTriggerClick( data)}}>Index</Button>
           {/* </a> */}
           <Dropdown menu={{ 
             items, 
@@ -323,16 +323,23 @@ export function Collections() {
   }, []);
 
   const metadatas = [
-    "Forrado",
-    "Marionete",
-    "Cirurgião",
-    "Nota",
-    "Granada",
-    "Eco",
-    "Bigode",
-    "Adolescente",
-    "Partido",
-    "Dinamite",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    "Example",
+    // "Marionete",
+    // "Cirurgião",
+    // "Nota",
+    // "Granada",
+    // "Eco",
+    // "Bigode",
+    // "Adolescente",
+    // "Partido",
+    // "Dinamite",
   ];
 
   const defaultTitle = () => "Here is title";
@@ -375,7 +382,7 @@ export function Collections() {
     expandable: {
       expandedRowRender: (record: DataType) => (
         <>
-          <h4>Metadatas:</h4>
+          <h4>Metadata:</h4>
           <Tag>{metadatas[7]}</Tag> <Tag>{metadatas[3]}</Tag>
           <Tag>{metadatas[5]}</Tag>
           <h4 style={{ marginTop: 10 }}>Associated Articles</h4>
