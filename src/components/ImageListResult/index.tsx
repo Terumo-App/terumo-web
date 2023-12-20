@@ -22,18 +22,24 @@ import useAuth from "../../hooks/useAuth";
 import { searchSimilarImages } from "../../services/pathoSpotter";
 import { useLocation } from "react-router-dom";
 
+interface ModelProbability {
+  attribute_name: string;
+  probability: number;
+}
 interface DataType {
-  id:number;
+  id: number;
   image_url: string;
   picture: {
     large?: string;
     medium?: string;
     thumbnail?: string;
   };
-  name:{last:string;}
+  name: { last: string; }
   nat?: string;
   loading: boolean;
   score: number | string;
+  vector?: ModelProbability[];
+  query_vector?: ModelProbability[];
 }
 
 const count = 6;
@@ -64,18 +70,79 @@ export function ImageListResult() {
     },
   ];
   // ============ Modal Info ======================
-  const showMoreInfoModal = (item:DataType) => {
+  const showMoreInfoModal = (item: DataType) => {
     console.log(item)
     Modal.info({
-      title: "Image explainability content",
+      title: "",
       content: (
         <div>
-          <p>Image Id {item.id}</p>
-          <p>Image Name {item.name.last}</p>
-          <p>CONTENT</p>
-          <p>CONTENT</p>
-          <p>CONTENT</p>
-          <p>CONTENT</p>
+          <h1>Image explainability content</h1>
+
+
+          <div style={{ marginBottom: '14px' }}>
+            <h2>Result Image</h2>
+            <Image
+              width={200}
+              height={175}
+              style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, marginBottom: '10px' }}
+              src={item.picture.thumbnail}
+            />
+            <p>
+              <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Image id:</span>
+              {item.id}
+            </p>
+            <p>
+              <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Image name:</span>
+              {item.name.last}
+            </p>
+
+            <p>
+              <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Similarity score:</span>
+              <p style={{ fontSize: 16, marginLeft: '7px' }}>{(item.score as number)}</p>
+            </p>
+            <h3>Semantic Attributes Probabilities</h3>
+
+            {item?.vector?.map(row => (
+              <div key={row.attribute_name} style={{ marginBottom: '10px' }}>
+                <p style={{ margin: '0', marginBottom: '3px' }}>
+                  <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Attribute Name:</span>
+                  {row.attribute_name}
+                </p>
+                <p style={{ margin: '0', marginBottom: '5px' }}>
+                  <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Probability:</span>
+                  {(row.probability * 100).toFixed(7)} %
+                </p>
+
+              </div>
+            ))}
+          </div>
+          <hr className="linha-horizontal" />
+
+          <div style={{ marginTop: '14px' }}>
+            <h2>Query Image</h2>
+            <Image
+              width={200}
+              height={175}
+              style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, marginBottom: '5px' }}
+              src={`${process.env.REACT_APP_API_URL}/image-query/${imageId}`}
+            />
+            <h3>Semantic Attributes Probabilities</h3>
+
+            {item?.query_vector?.map(row => (
+              <div key={row.attribute_name} style={{ marginBottom: '10px' }}>
+                <p style={{ margin: '0', marginBottom: '3px' }}>
+                  <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Attribute Name:</span>
+                  {row.attribute_name}
+                </p>
+                <p style={{ margin: '0', marginBottom: '5px' }}>
+                  <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Probability:</span>
+                  {(row.probability * 100).toFixed(7)} %
+                </p>
+
+              </div>
+            ))}
+          </div>
+
         </div>
       ),
       onOk() { },
@@ -294,7 +361,7 @@ export function ImageListResult() {
               }}
             >
               <h3>Score:</h3>
-              <p style={{ fontSize: 16 }}>{item.score}</p>
+              <p style={{ fontSize: 16, marginLeft: '7px' }}>{(item.score as number).toFixed(7)}</p>
             </div>
 
             <Divider
