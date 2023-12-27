@@ -1,5 +1,5 @@
 import logoImg from "../../assets/logoPS.svg";
-import Image from "../../assets/image.svg";
+import Image from "../../assets/avatar1.png";
 
 import { Container, Content } from "./styles";
 import { FiBell } from "react-icons/fi";
@@ -46,7 +46,7 @@ export function Header() {
 
         <div>
           <button type="button">
-            <Badge count={getRandomInteger(0, 20)}>
+            <Badge count={0}>
               <FiBell />
             </Badge>
           </button>
