@@ -5,6 +5,8 @@ interface NewQueryData {
   imageType?: string;
   image?: {id:string};
   attributes?: Array<any>;
+  returnedItems?:number;
+  searchTime?:number;
 }
 
 interface ImageObject {
@@ -34,6 +36,8 @@ interface NewQueryContextData {
   setImageType: (imageType: NewQueryData["imageType"]) => void;
   setImageFile: (image: NewQueryData["image"]) => void;
   setSemanticAttributes: (attributes: NewQueryData["attributes"]) => void;
+  setReturnedItems: (returnedItems: NewQueryData["returnedItems"]) => void;
+  setSearchTime: (searchTime: NewQueryData["searchTime"]) => void;
   validateForm: (step: number) => boolean;
 }
 
@@ -83,6 +87,20 @@ export function NewQueryProvider({ children }: NewQueryProviderProps) {
     return true;
   }
 
+  function setReturnedItems(returnedItems: NewQueryData["returnedItems"]): void {
+    setNewQueryData({ ...newQueryData, returnedItems });
+  }
+  function setSearchTime(searchTime: NewQueryData["searchTime"]): void {
+    console.log('search time: ', searchTime)
+    setNewQueryData(newQueryData => ({
+      ...newQueryData,
+      searchTime: searchTime
+    }));
+    // setNewQueryData({ ...newQueryData, searchTime });
+
+    console.log('newQueryData: ', newQueryData)
+  }
+
   return (
     <NewQueryContext.Provider
       value={{
@@ -93,6 +111,8 @@ export function NewQueryProvider({ children }: NewQueryProviderProps) {
         setImageFile,
         setSemanticAttributes,
         validateForm,
+        setSearchTime,
+        setReturnedItems,
       }}
     >
       {children}

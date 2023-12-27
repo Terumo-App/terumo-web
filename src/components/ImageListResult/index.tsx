@@ -77,72 +77,87 @@ export function ImageListResult() {
       content: (
         <div>
           <h1>Image explainability content</h1>
+          <div>
 
-
-          <div style={{ marginBottom: '14px' }}>
-            <h2>Result Image</h2>
-            <Image
-              width={200}
-              height={175}
-              style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, marginBottom: '10px' }}
-              src={item.picture.thumbnail}
-            />
-            <p>
-              <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Image id:</span>
-              {item.id}
-            </p>
-            <p>
-              <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Image name:</span>
-              {item.name.last}
-            </p>
-
-            <p>
-              <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Similarity score:</span>
-              <p style={{ fontSize: 16, marginLeft: '7px' }}>{(item.score as number)}</p>
-            </p>
-            <h3>Semantic Attributes Probabilities</h3>
-
-            {item?.vector?.map(row => (
-              <div key={row.attribute_name} style={{ marginBottom: '10px' }}>
-                <p style={{ margin: '0', marginBottom: '3px' }}>
-                  <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Attribute Name:</span>
-                  {row.attribute_name}
-                </p>
-                <p style={{ margin: '0', marginBottom: '5px' }}>
-                  <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Probability:</span>
-                  {(row.probability * 100).toFixed(7)} %
-                </p>
-
-              </div>
-            ))}
-          </div>
-          <hr className="linha-horizontal" />
-
-          <div style={{ marginTop: '14px' }}>
-            <h2>Query Image</h2>
-            <Image
-              width={200}
-              height={175}
-              style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, marginBottom: '5px' }}
-              src={`${process.env.REACT_APP_API_URL}/image-query/${imageId}`}
-            />
-            <h3>Semantic Attributes Probabilities</h3>
-
-            {item?.query_vector?.map(row => (
-              <div key={row.attribute_name} style={{ marginBottom: '10px' }}>
-                <p style={{ margin: '0', marginBottom: '3px' }}>
-                  <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Attribute Name:</span>
-                  {row.attribute_name}
-                </p>
-                <p style={{ margin: '0', marginBottom: '5px' }}>
-                  <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Probability:</span>
-                  {(row.probability * 100).toFixed(7)} %
-                </p>
-
-              </div>
-            ))}
+          <p>
+            <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Image id:</span>
+            {item.id}
+          </p>
+          <p>
+            <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Image name:</span>
+            {item.name.last}
+          </p>
+          <p>
+            <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Similarity:</span>
+            <p style={{ fontSize: 16, marginLeft: '7px' }}>{(item.score as number).toFixed(3)}</p>
+          </p>
           </div>
 
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+
+
+            <div style={{  marginRight: '20px' }}>
+              <h2>Result Image</h2>
+              <Image
+                width={200}
+                height={175}
+                style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, marginBottom: '10px' }}
+                src={item.picture.thumbnail}
+              />
+
+
+              <h3>Semantic Attributes</h3>
+
+              {item?.vector?.map(row => (
+                <div key={row.attribute_name} style={{ marginBottom: '10px' }}>
+                  <p style={{ margin: '0', marginBottom: '3px' }}>
+                    <span style={{ fontWeight: 'bold', marginRight: '2px' }}>{row.attribute_name}</span>
+                    {/* {row.attribute_name} */}
+                  </p>
+                  <p style={{ margin: '0', marginBottom: '5px' }}>
+                    {/* <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Probability:</span> */}
+                    {/* {(row.probability * 100).toFixed(3)} % */}
+                    <span style={{ color: row.probability > 0.5 ? 'green' : 'red' }}>
+                      {row.probability > 0.5 ? 'Present' : 'Not Present'}
+                    </span>
+
+                  </p>
+
+                </div>
+              ))}
+            </div>
+            {/* <hr className="linha-horizontal" /> */}
+
+            <div style={{  marginRight: '20px' }}>
+              <h2>Query Image</h2>
+              <Image
+                width={200}
+                height={175}
+                style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, marginBottom: '5px' }}
+                src={`${process.env.REACT_APP_API_URL}/image-query/${imageId}`}
+              />
+              <h3>Semantic Attributes</h3>
+
+              {item?.query_vector?.map(row => (
+                <div key={row.attribute_name} style={{ marginBottom: '10px' }}>
+                  <p style={{ margin: '0', marginBottom: '3px' }}>
+                    <span style={{ fontWeight: 'bold', marginRight: '2px' }}>{row.attribute_name}</span>
+                    {/* {row.attribute_name} */}
+                  </p>
+                  <p style={{ margin: '0', marginBottom: '5px' }}>
+                    {/* <span style={{ fontWeight: 'bold', marginRight: '2px' }}>Probability:</span> */}
+                    {/* {(row.probability * 100).toFixed(3)} % */}
+                    <span style={{ color: row.probability > 0.5 ? 'green' : 'red' }}>
+                      {row.probability > 0.5 ? 'Present' : 'Not Present'}
+                    </span>
+
+                  </p>
+
+                </div>
+              ))}
+            </div>
+
+          </div>
         </div>
       ),
       onOk() { },
@@ -151,7 +166,7 @@ export function ImageListResult() {
     });
   };
   // =======================================
-  const { newQueryData } = useContext(NewQueryContext);
+  const { newQueryData, setSearchTime, setReturnedItems } = useContext(NewQueryContext);
 
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -166,37 +181,6 @@ export function ImageListResult() {
   const [lastPage, setLastPage] = useState<number>(1);
   const location = useLocation();
 
-  const imageList = [
-    "https://st4.depositphotos.com/22518918/31524/i/450/depositphotos_315248498-stock-photo-microscopic-photograph-of-a-glomerulus.jpg",
-    "https://media.istockphoto.com/id/909807596/pt/foto/sclerosing-glomerulonephritis-biopsy-sample-under-microscopy.jpg?s=612x612&w=0&k=20&c=cb45gwLWXl-ahAxeXkW9_aviSdq-npjR4N4Etklk5TM=",
-    "https://media.istockphoto.com/id/1323832668/pt/foto/human-testis-under-the-light-microscope-view-shows-spermatogonia-spermatocytes-in-meiosis.jpg?s=612x612&w=0&k=20&c=-RObeTAizt0tOrP3rwjCMnXwiaF3ibLZ6y0-K-z8K4E=",
-    "https://media.istockphoto.com/id/1379380870/pt/foto/kidney-cortex-0-u20195-%C2%B5m-thick-section.jpg?s=612x612&w=0&k=20&c=cOg-mUI-34HH_Pj-z376zCprLlg00KtfmgH4QJPopd4=",
-    "https://media.istockphoto.com/id/908235620/pt/foto/acute-nephritis-biopsy-sample-under-microscopy.jpg?s=612x612&w=0&k=20&c=qKDZ1V98Ni6NoS9xVBbX7d1mZtq904tNWeaH4q9qdM0=",
-    "https://media.istockphoto.com/id/1379373904/pt/foto/renal-cortex-afferent-arteriole.jpg?s=612x612&w=0&k=20&c=5u7MVKd4nGjgUkLVbF-iv9KZfb_B2CDbFSA8CRy8Yoc=",
-    "https://media.istockphoto.com/id/666506432/pt/foto/kidney-cross-section-in-microscopy.jpg?s=612x612&w=0&k=20&c=7FrcGPkJMdsG3mxYeM4ZXXF_81KaUp0FeiHsDA8ZL4E=",
-    "https://media.istockphoto.com/id/948759072/pt/foto/histology-of-human-kidney-under-microscope-view-for-education.jpg?s=612x612&w=0&k=20&c=9xpdYT8G2QZtCcwfDr8c0xzj4wE5AHWIku733R0TyAc=",
-    "https://media.istockphoto.com/id/840250682/pt/foto/kidney-histology.jpg?s=612x612&w=0&k=20&c=GdHgdA8PCY6pU1L4XlyzPafC8H_XlSAQ7U6C6IsqIlg=",
-    "https://st2.depositphotos.com/3413075/10679/i/450/depositphotos_106794368-stock-photo-human-nephrons-anatomy.jpg",
-    "https://static5.depositphotos.com/1014098/455/i/450/depositphotos_4550285-stock-photo-extracapillary-glomerulonephritis.jpg",
-    "https://st3.depositphotos.com/15723030/18014/i/450/depositphotos_180147440-stock-photo-kidney-pas.jpg",
-    "https://st5.depositphotos.com/79270370/65824/i/450/depositphotos_658246648-stock-photo-kidney-star-single-glomerulus-closeup.jpg",
-    "https://media.istockphoto.com/id/908220838/pt/foto/acute-nephritis-biopsy-sample-under-microscopy.jpg?s=612x612&w=0&k=20&c=Odv_ym83Iz1cT9R4-TBsUiY7YMm0NQMeTjT6w50jnlg=",
-    "https://media.istockphoto.com/id/965908010/pt/foto/histology-of-human-kidney-under-microscope-view-for-education-histology-human-tissue.jpg?s=612x612&w=0&k=20&c=qnz2lm9gR7KNTFjcy_SeJlUah-NsYvJ5izRa7bhQpLw=",
-    "https://media.istockphoto.com/id/1061813552/pt/foto/contracted-kidney-light-micrograph.jpg?s=612x612&w=0&k=20&c=smWfgKHJDnYOlRmeI81GmjmwHAcGAVjqzbfMbc31Thk=",
-    "https://media.istockphoto.com/id/908227854/pt/foto/acute-nephritis-biopsy-sample-under-microscopy.jpg?s=612x612&w=0&k=20&c=CLWYga9CbsAQo-IeLbyyKQswc8bAXZn9-zqBRFIBNFQ=",
-    "https://media.istockphoto.com/id/861209044/pt/foto/kidney-glomeruli.jpg?s=612x612&w=0&k=20&c=q8wtM55ttoin4eplvZv0zw_bb6IkT95i8WlG6sY3DJY=",
-    "https://media.istockphoto.com/id/1321565511/pt/foto/kidney-glomerulus.jpg?s=612x612&w=0&k=20&c=mCva6uwWWyDhFgRPTsUqDsBHhfpVl5wC2YZW68fre1s=",
-    "https://media.istockphoto.com/id/1379381416/pt/foto/kidney-cortex-0-u20195-%C2%B5m-thick-section.jpg?s=612x612&w=0&k=20&c=DepikWD0mgGzLdNyvaXTHLRHnEU4kg-bs73QMT4L2tM=",
-    "https://media.istockphoto.com/id/1335852099/pt/foto/acute-appendicitis-of-human-body-with-inflammed-appendix-and-light-micrograph-photo-under.jpg?s=612x612&w=0&k=20&c=o7t1_vn7hxtV_LX7Oy4t33XsuRHgQhP2W6TH2nP5XYs=",
-    "https://media.istockphoto.com/id/1334771384/pt/foto/tissue-form-anal-canal-histopathology-slide-microscopic-40x-show-basaloid-squamous-cell.jpg?s=612x612&w=0&k=20&c=YzifnKfIeR_4aJd_XKR4dU-4DmxBdtRsiOSn6pmwH9w=",
-    "https://media.istockphoto.com/id/918905782/pt/foto/mouse-kidney-under-the-microscope.jpg?s=612x612&w=0&k=20&c=yJ5HBvm5DF1HEqanqUXO0QSOpIV_tyopjmS18GKx-Aw=",
-    "https://media.istockphoto.com/id/652641558/pt/foto/histology-of-human-kidney-under-microscope-view.jpg?s=612x612&w=0&k=20&c=zLmAK2NqmzTtvv7BzSrFlVmgPB5MLwJ_mt59M_XK65A=",
-    "https://media.istockphoto.com/id/698912140/pt/foto/kidney.jpg?s=612x612&w=0&k=20&c=waRA3viyI8P2UfvAxOK29C8BcuTy-e3ZMXCbVnr2rpY=",
-    "https://media.istockphoto.com/id/1379373908/pt/foto/kidney-cortex-medullary-rays.jpg?s=612x612&w=0&k=20&c=KWXe0IjyPv55nsxvk5cF7_eUyVzvjEumr9A2t1gUsJU=",
-    "https://media.istockphoto.com/id/666506432/pt/foto/kidney-cross-section-in-microscopy.jpg?s=612x612&w=0&k=20&c=7FrcGPkJMdsG3mxYeM4ZXXF_81KaUp0FeiHsDA8ZL4E=",
-    "https://media.istockphoto.com/id/1323832668/pt/foto/human-testis-under-the-light-microscope-view-shows-spermatogonia-spermatocytes-in-meiosis.jpg?s=612x612&w=0&k=20&c=-RObeTAizt0tOrP3rwjCMnXwiaF3ibLZ6y0-K-z8K4E=",
-    "https://media.istockphoto.com/id/937463412/pt/foto/renal-corpuscles-filtering-the-blood-in-the-kidney.jpg?s=612x612&w=0&k=20&c=OyK9CN-QmqcYKgMAnFm1BitrXknhuhFcpBGD4ahhxw4=",
-  ];
 
 
   function appSetup() {
@@ -208,6 +192,8 @@ export function ImageListResult() {
       const collection_id = searchParams.get('collection');
       setImageId(image_id);
       setCollectionId(collection_id);
+
+      const startTime = performance.now();
       searchSimilarImages(
         {
           "private_key": res.privateKey,
@@ -217,38 +203,25 @@ export function ImageListResult() {
         },
         nextPage
       ).then((data: any) => {
+        const endTime = performance.now();
+        const duration = endTime - startTime;
+        setList(data.items)
+        setReturnedItems(data.total)
+        setSearchTime(duration)
+
         setInitLoading(false);
         // console.log(data)
         setNextPage(data.page + 1)
         setLastPage(data.pages)
         setData(data.items)
-        setList(data.items)
 
+        console.log(`Tempo de resposta da API: ${duration} milissegundos`);
+        console.log(newQueryData.returnedItems);
       })
     });
   }
 
   useEffect(() => {
-    // fetch(fakeDataUrl)
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     setInitLoading(false);
-
-    //     console.log(res.results);
-    //     const newData = data.concat(res.results);
-    //     const aux = newData.map((item, index) => {
-    //       return {
-    //         ...item,
-    //         picture: {
-    //           thumbnail: imageList[index],
-    //         },
-    //         score: `0.${getRandomInteger(9000, 9999)}`,
-    //       };
-    //     });
-
-    //     setData(aux.sort((a, b) => Number(a.score) - Number(b.score)));
-    //     setList(aux.sort((a, b) => Number(a.score) - Number(b.score)));
-    //   });
 
     appSetup()
   }, []);
@@ -360,8 +333,8 @@ export function ImageListResult() {
                 marginTop: -10,
               }}
             >
-              <h3>Score:</h3>
-              <p style={{ fontSize: 16, marginLeft: '7px' }}>{(item.score as number).toFixed(7)}</p>
+              <h3>Similarity:</h3>
+              <p style={{ fontSize: 16, marginLeft: '7px' }}>{(item.score as number).toFixed(3)}</p>
             </div>
 
             <Divider
